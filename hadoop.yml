@@ -1,0 +1,22 @@
+- hosts: test
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+  - name: Creating resource folder
+    register: foldercreated
+    file: path=/home/dbnet/resources state=directory owner=dbnet group=dbnet mode=0744 recurse=yes
+
+  - name: Copying the cluster config to all hosts
+    when: foldercreated|success
+    register: configcopied
+    copy: src=/home/manu/resources/cluster.cnf dest=/home/dbnet/resources/cluster.cnf owner=dbnet group=dbnet mode=0744
+
+  - name: Pulling newest docker image
+    when: configcopied|success
+    register: imagepulled
+    command: docker pull carnuel/hadoop-cluster
+
+  - name: Running image
+    when: imagepulled|success
+    register: running
+    command: docker run -dt -v /home/dbnet/resources:/mnt --net="host" carnuel/hadoop-cluster
