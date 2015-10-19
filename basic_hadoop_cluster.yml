@@ -1,0 +1,33 @@
+- hosts: basic
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if tar exists
+    stat: path=/home/dbnet/hadoop-2.7.1.tar.gz
+    register: hadoop_tar
+  - name: Download hadoop
+    when: hadoop_tar.stat.exists == False
+    get_url: url=http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz dest=/home/dbnet/hadoop-2.7.1.tar.gz
+    register: downloaded
+
+  - name: Check if tar has been unpacked
+    stat: path=/usr/local/hadoop-2.7.1
+    register: hadoop_unpacked
+  - name: Unpack hadoop-2.7.1.tar.gz
+    when: hadoop_unpacked.stat.exists == False and (downloaded|success or downloaded|skipped)
+    unarchive: src=/home/dbnet/hadoop-2.7.1.tar.gz dest=/usr/local/ copy=no
+    register: unpacked
+
+  - name: Check if symbolic link exists
+    stat: path=/usr/local/hadoop
+    register: symbolic_link
+
+  - name: Set environmental variables
+    shell: export HADOOP_PREFIX=/usr/local/hadoop && echo $HADOOP_PREFIX
+    register: envset
+
+  - name: Set symbolic link
+    when: symbolic_link.stat.exists == False
+    shell: cd /usr/local && ln -s ./hadoop-2.7.1 hadoop
+    
