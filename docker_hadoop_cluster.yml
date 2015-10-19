@@ -1,4 +1,4 @@
-- hosts: test
+- hosts: cluster
   sudo: yes
   remote_user: dbnet
   tasks:
