@@ -1,0 +1,27 @@
+- hosts: master
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+  - name: Creating resource folder
+    register: foldercreated
+    file: path=/home/dbnet/resources state=directory owner=dbnet group=dbnet mode=0744 recurse=yes
+
+  - name: Copying the cluster config to all hosts
+    when: foldercreated|success
+    register: configcopied
+    copy: src=/home/carlo/resources/cluster.cnf dest=/home/dbnet/resources/cluster.cnf owner=dbnet group=dbnet mode=0744
+
+  - name: Pulling newest docker image
+    when: configcopied|success
+    register: imagepulled
+    command: docker pull carnuel/hadoop-pipework
+
+  - name: Running image
+    when: imagepulled|success
+    register: running
+    command: docker run --name="server" --hostname="server" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.64 hold
+
+  - name: Change Container IP
+    when: running|success
+    register: ipchanged
+    shell: pipework eth0 server 136.199.51.64/24@136.199.51.64
