@@ -1,0 +1,112 @@
+- hosts: slaves
+  roles:
+    - slaves
+  sudo: yes
+  remote_user: dbnet
+
+  tasks:
+  - name: Creating resource folder
+    register: foldercreated
+    file: path=/home/dbnet/resources state=directory owner=dbnet group=dbnet mode=0744 recurse=yes
+
+  - name: Copying the cluster config to all hosts
+    when: foldercreated|success
+    register: configcopied
+    copy: src=/home/carlo/resources/cluster.cnf dest=/home/dbnet/resources/cluster.cnf owner=dbnet group=dbnet mode=0744
+
+  - name: Pulling newest docker image
+    when: configcopied|success
+    register: imagepulled
+    shell: docker pull carnuel/hadoop-pipework
+
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.111")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave111   
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.112")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave112 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.113")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave113 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.114")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave114 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.115")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave115 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.116")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave116 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.117")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave117 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.118")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave118 
+  - name: Running image
+    when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.119")
+    register: running
+    shell: docker run --name="Slave{{item}}" --hostname="Slave{{item}}" -d -v /home/dbnet/resources:/mnt carnuel/hadoop-pipework "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} hold
+    with_items: Slave119 
+
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.111")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave111
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.112")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave112
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.113")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave113
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.114")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave114
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.115")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave115
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.116")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave116
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.117")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave117
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.118")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave118
+  - name: Change Container IP
+    when: (running|success and ansible_eth0.ipv4.address == "136.199.51.119")
+    register: ipchanged
+    shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
+    with_items: Slave119
