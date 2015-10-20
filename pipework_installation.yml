@@ -1,0 +1,18 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  
+  tasks:
+  
+  - name: Check if pipework exists
+    stat: path=/usr/local/bin/pipework
+    register: pipework_exists
+
+  - name: Download pipework
+    when: pipework_exists.stat.exists == False
+    shell: bash -c "curl https://raw.githubusercontent.com/jpetazzo/pipework/master/pipework > /usr/local/bin/pipework"
+    register: pipework_downloaded
+
+  - name: Set Permissions for Pipework
+    when: pipework_downloaded|success
+    shell: chmod 777 /usr/local/bin/pipework

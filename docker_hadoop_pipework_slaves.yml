@@ -110,3 +110,40 @@
     register: ipchanged
     shell: pipework eth0 Slave{{item}} 136.199.51.{{item}}/24@136.199.51.{{item}}
     with_items: Slave119
+    
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.111")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave111
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.112")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave112
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.113")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave113
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.114")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave114
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.115")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave115
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.116")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave116
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.117")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave117
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.118")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave118
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: (ipchanged|success and ansible_eth0.ipv4.address == "136.199.51.119")
+    shell: docker exec -d Slave{{item}} "/etc/bootstrap.sh" -pipework 136.199.51.{{item}} start sleep
+    with_items: Slave119

@@ -25,3 +25,8 @@
     when: running|success
     register: ipchanged
     shell: pipework eth0 server 136.199.51.64/24@136.199.51.64
+
+  - name: Start Container and Hadoop-Nodes in it, sleep
+    when: ipchanged|success
+    shell: docker exec -d server "/etc/bootstrap.sh" -pipework 136.199.51.64 start sleep
+
