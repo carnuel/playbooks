@@ -2,6 +2,9 @@
   sudo: yes
   remote_user: dbnet
   tasks:
+  - name: Clear containers
+    shell: "clearContainers"
+
   - name: Creating resource folder
     register: foldercreated
     file: path=/home/dbnet/pipe_resources state=directory owner=dbnet group=dbnet mode=0744 recurse=yes
