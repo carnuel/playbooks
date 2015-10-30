@@ -1,0 +1,10 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+  - name: Uninstall the Docker package and dependencies
+    shell: apt-get -y autoremove --purge docker-engine
+
+  - name: Remove /var/lib/docker
+    shell: rm -rf /var/lib/docker
+

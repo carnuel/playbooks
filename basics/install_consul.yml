@@ -1,0 +1,17 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Get zip file
+    register: downloaded
+    get_url: url=https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip dest=/tmp/0.5.2_linux_amd64.zip
+
+  - name: unzip file
+    when: downloaded|success
+    register: unzipped
+    unarchive: src=/tmp/0.5.2_linux_amd64.zip dest=/usr/local/bin copy=no
+
+  - name: delete zip file
+    when: unzipped|success
+    shell: rm /tmp/0.5.2_linux_amd64.zip

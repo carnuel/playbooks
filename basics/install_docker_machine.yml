@@ -1,0 +1,21 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+  - name: Check if binary exists
+    stat: path=/usr/local/bin/docker-machine
+    register: binary
+
+  - name: download zip file
+    when: binary.stat.exists == False
+    get_url: url=https://github.com/docker/machine/releases/download/v0.5.0-rc4/docker-machine_linux-amd64.zip dest=/tmp/docker-machine.zip
+    register: downloaded
+
+  - name: unzip file
+    when: downloaded|success
+    register: unzipped
+    unarchive: src=/tmp/docker-machine.zip dest=/usr/local/bin copy=no
+
+  - name: delete zip file
+    when: unzipped|success
+    shell: rm /tmp/docker-machine.zip
