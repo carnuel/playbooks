@@ -15,4 +15,4 @@
 
   - name: Set Permissions for Pipework
     when: pipework_downloaded|success
-    shell: chmod 777 /usr/local/bin/pipework
+    shell: chmod +x /usr/local/bin/pipework

@@ -9,7 +9,7 @@
   - name: Copying the cluster config to all hosts
     when: foldercreated|success
     register: configcopied
-    copy: src=/media/usb1/config-files/resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
+    copy: src=/media/usb1/masterthesis/config-files/resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
 
   - name: Pulling newest docker image
     when: configcopied|success
