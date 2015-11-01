@@ -1,0 +1,7 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Uninstall virutalbox
+    shell: apt-get -y autoremove --purge virtualbox

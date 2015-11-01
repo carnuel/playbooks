@@ -1,6 +1,0 @@
-- hosts: cluster
-  sudo: yes
-  remote_user: dbnet
-  tasks:
-  - name: Install pre-release 1.9rc3
-    shell: curl -sSL https://test.docker.com/ | sh

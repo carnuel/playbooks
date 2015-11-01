@@ -7,6 +7,6 @@
     shell: apt-get -y install virtualbox
     register: installed
 
-  - name: Add user to group
+  - name: Add user to group vboxusers
     when: installed|success
     shell: adduser dbnet vboxusers

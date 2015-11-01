@@ -1,0 +1,13 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Install pre-release test build
+    register: installed
+    shell: curl -sSL https://test.docker.com/ | sh
+
+  - name: Add user to group docker
+    when: installed|success
+    shell: adduser dbnet docker
+
