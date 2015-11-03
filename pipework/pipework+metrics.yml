@@ -1,0 +1,6 @@
+---
+# file: pipework+metrics.yml
+- include: database.yml
+- include: cadvisor.yml
+- include: docker_hadoop_pipework_master.yml
+- include: docker_hadoop_pipework_slaves.yml

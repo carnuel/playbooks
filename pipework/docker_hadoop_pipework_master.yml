@@ -2,8 +2,6 @@
   sudo: yes
   remote_user: dbnet
   tasks:
-  - name: Clear containers
-    shell: "clearContainers"
 
   - name: Creating resource folder
     register: foldercreated
@@ -33,3 +31,4 @@
     when: ipchanged|success
     shell: docker exec -d server "/etc/bootstrap.sh" -pipework 136.199.51.64 start sleep
 
+  - pause: minutes=1

@@ -5,8 +5,6 @@
   remote_user: dbnet
 
   tasks:
-  - name: Clear containers
-    shell: "clearContainers"
 
   - name: Creating resource folder
     register: foldercreated
@@ -20,7 +18,7 @@
   - name: Pulling newest docker image
     when: configcopied|success
     register: imagepulled
-    shell: docker pull carnuel/hadoop-pipework
+    shell: docker pull carnuel/hadoop-pipework:v2
 
   - name: Running image
     when: (imagepulled|success and ansible_eth0.ipv4.address == "136.199.51.111")

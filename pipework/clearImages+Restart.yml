@@ -1,0 +1,4 @@
+---
+# file: pipework+metrics.yml
+- include: clearImagesTMP.yml
+- include: rebootTMP.yml
