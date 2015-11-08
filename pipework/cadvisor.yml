@@ -1,0 +1,15 @@
+- hosts: master:slaves
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+  - name: Clear containers
+    shell: "clearContainers"
+
+  - name: Pulling newest docker image
+    register: imagepulled
+    command: docker pull axibase/cadvisor:latest
+
+  - name: Running image
+    when: imagepulled|success
+    register: running
+    command: docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor axibase/cadvisor:latest --storage_driver=atsd --storage_driver_user=user --storage_driver_password=secret-pwd --atsd_storage_url=http://136.199.51.119:8088 --atsd_storage_write_host=136.199.51.119:8081 --atsd_storage_write_protocol=tcp --atsd_storage_docker_host="$HOSTNAME"
