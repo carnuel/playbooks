@@ -4,4 +4,4 @@
   tasks:
 
   - name: delete private folders (.<filename>)
-    shell: rm -rf .cache && rm -rf .ansible && rm -rf .docker && rm -rf .oracle_jre_usage && rm -rf .sudo_as_admin_successful && rm -rf .viminfo && rm -rf .bash_history
+    shell: rm -rf .cache .ansible .docker .oracle_jre_usage .sudo_as_admin_successful .viminfo .bash_history

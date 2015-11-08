@@ -4,4 +4,4 @@
   tasks:
 
   - name: Uninstall virutalbox
-    shell: apt-get -y autoremove --purge virtualbox
+    shell: apt-get -y autoremove --purge virtualbox*

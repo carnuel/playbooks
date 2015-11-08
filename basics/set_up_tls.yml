@@ -1,0 +1,68 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  # Set TLS for ROOT
+  - name: Check if /root/.docker exists
+    stat: path=/root/.docker
+    register: docker
+  - name: Create folder in root
+    when: docker.stat.exists == False
+    register: foldercreated
+    file: path=/root/.docker state=directory owner=root group=root mode=0700 recurse=yes
+  - name: Copy ca-key.pem to root
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/ca-key.pem dest=/root/.docker/ca-key.pem owner=root group=root mode=0400
+  - name: Copy key.pem to root
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/key.pem dest=/root/.docker/key.pem owner=root group=root mode=0400
+  - name: Copy server-key.pem to root
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/server-key.pem dest=/root/.docker/server-key.pem owner=root group=root mode=0400
+  - name: Copy ca.pem to root
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/ca.pem dest=/root/.docker/ca.pem owner=root group=root mode=0444
+  - name: Copy server-cert.pem to root
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/server-cert.pem dest=/root/.docker/server-cert.pem owner=root group=root mode=0444
+  - name: Copy cert.pem to root
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/cert.pem dest=/root/.docker/cert.pem owner=root group=root mode=0444
+
+  # Set TLS for DBNET
+  - name: Check if /home/dbnet/.docker exists
+    stat: path=/home/dbnet/.docker
+    register: docker
+  - name: Create folder in dbnet
+    when: docker.stat.exists == False
+    register: foldercreated
+    file: path=/home/dbnet/.docker state=directory owner=dbnet group=dbnet mode=0700 recurse=yes
+  - name: Copy ca-key.pem to dbnet
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/ca-key.pem dest=/home/dbnet/.docker/ca-key.pem owner=dbnet group=dbnet mode=0400
+  - name: Copy key.pem to dbnet
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/key.pem dest=/home/dbnet/.docker/key.pem owner=dbnet group=dbnet mode=0400
+  - name: Copy server-key.pem to dbnet
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/server-key.pem dest=/home/dbnet/.docker/server-key.pem owner=dbnet group=dbnet mode=0400
+  - name: Copy ca.pem to dbnet
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/ca.pem dest=/home/dbnet/.docker/ca.pem owner=dbnet group=dbnet mode=0444
+  - name: Copy server-cert.pem to dbnet
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/server-cert.pem dest=/home/dbnet/.docker/server-cert.pem owner=dbnet group=dbnet mode=0444
+  - name: Copy cert.pem to dbnet
+    when: foldercreated|success
+    copy: src=/media/usb1/masterthesis/tls_files/cert.pem dest=/home/dbnet/.docker/cert.pem owner=dbnet group=dbnet mode=0444
+
+  # Create workaround as long as /etc/default/docker is not compatible
+  - name: Create folder for workaround drop-in files
+    file: path=/etc/systemd/system/docker.service.d state=directory owner=root group=root mode=0755 recurse=yes
+  - name: Copy drop-in file
+    copy: src=/media/usb1/masterthesis/tls_files/ubuntu.conf dest=/etc/systemd/system/docker.service.d/ubuntu.conf owner=root group=root mode=0644
+  - name: systemctl daemon-reload
+    shell: systemctl daemon-reload
+  - name: systemctl restart docker
+    shell: systemctl restart docker

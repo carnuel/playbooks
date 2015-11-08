@@ -1,0 +1,16 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Create source file for VBox and write repository address into it
+    shell: sh -c 'echo "deb http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib" > /etc/apt/sources.list.d/virtualbox.list'
+
+  - name: Download and insert the keyring
+    shell: wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add -
+
+  - name: Update apt
+    shell: apt-get update
+
+  - name: Install virtualbox v5.0.8
+    shell: apt-get -y install virtualbox-5.0
