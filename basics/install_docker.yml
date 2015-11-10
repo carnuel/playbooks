@@ -5,7 +5,7 @@
 
   - name: Install pre-release test build
     register: installed
-    shell: curl -sSL https://test.docker.com/ | sh
+    shell: curl -sSL https://get.docker.com/ | shh
 
   - name: Add user to group docker
     when: installed|success
