@@ -1,0 +1,13 @@
+- hosts: databasetest
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Pulling newest docker image
+    register: imagepulled
+    command: docker pull ubuntu
+
+  - name: Running image
+    when: imagepulled|success
+    register: running
+    command: docker run --name="dummy1" --hostname="dummy1" -d ubuntu tail -f /dev/null 

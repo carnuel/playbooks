@@ -1,4 +1,4 @@
-- hosts: master:slaves:database
+- hosts: database:databasetest
   sudo: yes
   remote_user: dbnet
   tasks:
