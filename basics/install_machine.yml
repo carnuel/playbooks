@@ -1,0 +1,17 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Download zip file
+    get_url: url=https://github.com/docker/machine/releases/download/v0.5.0/docker-machine_linux-amd64.zip dest=/tmp/machine.zip
+    register: downloaded
+
+  - name: Unzip file
+    when: downloaded|success
+    register: unzipped
+    unarchive: src=/tmp/machine.zip dest=/usr/local/bin copy=no
+
+  - name: Delete zip file
+    when: unzipped|success
+    shell: rm /tmp/machine.zip
