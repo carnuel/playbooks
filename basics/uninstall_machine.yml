@@ -1,7 +1,0 @@
-- hosts: cluster
-  sudo: yes
-  remote_user: dbnet
-  tasks:
-
-  - name: delete docker-machine binary
-    shell: rm /usr/local/bin/docker-machine*

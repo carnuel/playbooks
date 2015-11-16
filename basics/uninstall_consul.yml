@@ -1,8 +1,0 @@
-- hosts: cluster
-  sudo: yes
-  remote_user: dbnet
-  tasks:
-
-  - name: delete consul binary
-    shell: rm /usr/local/bin/consul
-

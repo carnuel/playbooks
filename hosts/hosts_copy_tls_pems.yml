@@ -1,5 +1,6 @@
 - hosts: cluster
   sudo: yes
+  gather_facts: no
   remote_user: dbnet
   vars:
     zip_path: /media/usb1/masterthesis/pems.zip

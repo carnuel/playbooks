@@ -1,0 +1,20 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  gather_facts: no
+  tasks:
+  - name: Check if drop in already exists
+    stat: path=/etc/systemd/system/docker.service.d
+    register: dropInFolder
+  - name: Delete if folder exists
+    when: dropInFolder.stat.exists == True
+    register: folderDeleted
+    shell: rm -rf /etc/systemd/system/docker.service.d
+
+  - name: systemctl daemon-reload
+    when: folderDeleted|success
+    register: systemctlDaemonReloaded
+    shell: systemctl daemon-reload
+  - name: systemctl restart docker
+    when: systemctlDaemonReloaded|success
+    shell: systemctl restart docker

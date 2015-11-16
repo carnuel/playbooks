@@ -1,0 +1,21 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  gather_facts: no
+  tasks:
+
+  # Set TLS for ROOT
+  - name: Check if /root/.docker exists
+    stat: path=/root/.docker
+    register: docker
+  - name: Create folder in root
+    when: docker.stat.exists == True
+    shell: rm -rf /root/.docker
+
+  # Set TLS for DBNET
+  - name: Check if /home/dbnet/.docker exists
+    stat: path=/home/dbnet/.docker
+    register: docker
+  - name: Create folder in dbnet
+    when: docker.stat.exists == True
+    shell: rm -rf /home/dbnet/.docker

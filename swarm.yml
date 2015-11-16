@@ -1,0 +1,22 @@
+- hosts: test
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+  - name: Creating resource folder
+    register: foldercreated
+    file: path=/home/dbnet/swarm_resources state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
+
+  - name: Copying the cluster config to all hosts
+    when: foldercreated|success
+    register: configcopied
+    copy: src=/media/usb1/masterthesis/config-files/swarm_resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
+
+#  - name: Copy daemon settings
+#  - name: Restart daemon
+#  - name: Join cluster
+
+#- hosts: manager
+#  - name: Run consul
+#  - name: Run manager
+#  - name: Run hadoop containers with names

@@ -3,5 +3,7 @@
   gather_facts: no
   remote_user: dbnet
   tasks:
-  - name: Clear containers
-    shell: "clearContainers"
+
+  - name: restart machine
+    shell: reboot
+    ignore_errors: true

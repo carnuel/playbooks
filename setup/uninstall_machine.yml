@@ -1,0 +1,13 @@
+- hosts: cluster
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if binary exists
+    stat: path=/usr/local/bin/docker-machine
+    register: binary
+
+  - name: Delete if binary exists
+    when: binary.stat.exists == True
+    shell: rm /usr/local/bin/docker-machine*

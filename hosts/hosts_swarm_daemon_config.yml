@@ -1,0 +1,39 @@
+# Create drop-in folder and and copy drop-in file
+- hosts: test
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+  - name: Check if drop in already exists
+    stat: path=/etc/systemd/system/docker.service.d
+    register: dropInFolder
+  - name: Delete if folder exists
+    when: dropInFolder.stat.exists == True
+    register: folderDeleted
+    shell: rm -rf /etc/systemd/system/docker.service.d
+  - name: Create folder
+    when: folderDeleted|success or folderDeleted|skipped
+    register: folderCreated
+    file: path=/etc/systemd/system/docker.service.d state=directory owner=root group=root mode=0755
+
+  - name: Copy drop-in file
+    when: folderCreated|success
+    register: dropInFileCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/daemon-drop-in.conf dest=/etc/systemd/system/docker.service.d/daemon-drop-in.conf
+  - name: Copy daemon settings
+    when: dropInFileCopied|success
+    register: daemonSettingsCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/swarm-daemon-settings.conf dest=/home/dbnet/daemon-settings.conf owner=dbnet group=dbnet mode=0644
+
+  - name: Write IP in daemon settings
+    when:  daemonSettingsCopied|success
+    register: ipWritten
+    shell: sed -i s/HOST_IP/{{ ansible_eth0.ipv4.address }}/ /home/dbnet/daemon-settings.conf
+
+  - name: systemctl daemon-reload
+    when: ipWritten|success
+    register: systemctlDaemonReloaded
+    shell: systemctl daemon-reload
+  - name: systemctl restart docker
+    when: systemctlDaemonReloaded|success
+    shell: systemctl restart docker

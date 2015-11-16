@@ -1,0 +1,8 @@
+- hosts: cluster
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Remove DOCKER_TLS_VERIFY from /etc/environment
+    shell: sed -i "/^DOCKER_TLS_VERIFY=/d" /etc/environment
