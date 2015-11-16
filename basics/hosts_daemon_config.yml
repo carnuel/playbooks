@@ -1,0 +1,104 @@
+# Create drop-in folder and and copy drop-in file
+- hosts: swarm-manager
+  sudo: yes
+  remote_user: dbnet
+  gather_facts: no
+  tasks:
+  - name: Check if drop in already exists
+    stat: path=/etc/systemd/system/docker.service.d
+    register: dropInFolder
+  - name: Delete if folder exists
+    when: dropInFolder.stat.exists == True
+    register: folderDeleted
+    shell: rm -rf /etc/systemd/system/docker.service.d
+  - name: Create folder
+    when: folderDeleted|success or folderDeleted|skipped
+    register: folderCreated
+    file: path=/etc/systemd/system/docker.service.d state=directory owner=root group=root mode=0755
+
+  - name: Copy drop-in file
+    when: folderCreated|success
+    register: dropInFileCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/daemon-drop-in.conf dest=/etc/systemd/system/docker.service.d/daemon-drop-in.conf
+  - name: Copy daemon settings
+    when: dropInFileCopied|success
+    register: daemonSettingsCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/manager-daemon-settings.conf dest=/home/dbnet/daemon-settings.conf owner=dbnet group=dbnet mode=0644
+
+  - name: systemctl daemon-reload
+    when: daemonSettingsCopied|success
+    register: systemctlDaemonReloaded
+    shell: systemctl daemon-reload
+  - name: systemctl restart docker
+    when: systemctlDaemonReloaded|success
+    shell: systemctl restart docker
+
+# Create drop-in folder and and copy drop-in file
+- hosts: swarm-nodes
+  sudo: yes
+  remote_user: dbnet
+  gather_facts: no
+  tasks:
+  - name: Check if drop in already exists
+    stat: path=/etc/systemd/system/docker.service.d
+    register: dropInFolder
+  - name: Delete if folder exists
+    when: dropInFolder.stat.exists == True
+    register: folderDeleted
+    shell: rm -rf /etc/systemd/system/docker.service.d
+  - name: Create folder
+    when: folderDeleted|success or folderDeleted|skipped
+    register: folderCreated
+    file: path=/etc/systemd/system/docker.service.d state=directory owner=root group=root mode=0755
+
+  - name: Copy drop-in file
+    when: folderCreated|success
+    register: dropInFileCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/daemon-drop-in.conf dest=/etc/systemd/system/docker.service.d/daemon-drop-in.conf
+  - name: Copy daemon settings
+    when: dropInFileCopied|success
+    register: daemonSettingsCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/node-daemon-settings.conf dest=/home/dbnet/daemon-settings.conf owner=dbnet group=dbnet mode=0644
+
+  - name: systemctl daemon-reload
+    when: daemonSettingsCopied|success
+    register: systemctlDaemonReloaded
+    shell: systemctl daemon-reload
+  - name: systemctl restart docker
+    when: systemctlDaemonReloaded|success
+    shell: systemctl restart docker
+
+# Create drop-in folder and and copy drop-in file
+- hosts: consul
+  sudo: yes
+  remote_user: dbnet
+  gather_facts: no
+  tasks:
+  - name: Check if drop in already exists
+    stat: path=/etc/systemd/system/docker.service.d
+    register: dropInFolder
+  - name: Delete if folder exists
+    when: dropInFolder.stat.exists == True
+    register: folderDeleted
+    shell: rm -rf /etc/systemd/system/docker.service.d
+  - name: Create folder
+    when: folderDeleted|success or folderDeleted|skipped
+    register: folderCreated
+    file: path=/etc/systemd/system/docker.service.d state=directory owner=root group=root mode=0755
+
+  - name: Copy drop-in file
+    when: folderCreated|success
+    register: dropInFileCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/daemon-drop-in.conf dest=/etc/systemd/system/docker.service.d/daemon-drop-in.conf
+  - name: Copy daemon settings
+    when: dropInFileCopied|success
+    register: daemonSettingsCopied
+    copy: src=/media/usb1/masterthesis/config-files/daemon-config/consul-daemon-settings.conf dest=/home/dbnet/daemon-settings.conf owner=dbnet group=dbnet mode=0644
+
+  - name: systemctl daemon-reload
+    when: daemonSettingsCopied|success
+    register: systemctlDaemonReloaded
+    shell: systemctl daemon-reload
+  - name: systemctl restart docker
+    when: systemctlDaemonReloaded|success
+    shell: systemctl restart docker

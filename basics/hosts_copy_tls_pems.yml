@@ -1,0 +1,32 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  vars:
+    zip_path: /media/usb1/masterthesis/pems.zip
+  tasks:
+
+  # Set TLS for ROOT
+  - name: Check if /root/.docker exists
+    stat: path=/root/.docker
+    register: docker
+  - name: Create folder in root
+    when: docker.stat.exists == False
+    register: foldercreated
+    file: path=/root/.docker state=directory owner=root group=root mode=0700 recurse=yes
+  - name: Unzip pem files to root
+    when: foldercreated|success or foldercreated|skipped
+    unarchive: src={{ zip_path }} dest=/root/.docker
+
+  # Set TLS for DBNET
+  - name: Check if /home/dbnet/.docker exists
+    stat: path=/home/dbnet/.docker
+    register: docker
+  - name: Create folder in dbnet
+    when: docker.stat.exists == False
+    register: foldercreated
+    file: path=/home/dbnet/.docker state=directory owner=dbnet group=dbnet mode=0700 recurse=yes
+  - name: Unzip pem files to dbnet
+    when: foldercreated|success or foldercreated|skipped
+    unarchive: src={{ zip_path }} dest=/home/dbnet/.docker
+  - name: Set file ownership to dbnet
+    file: path=/home/dbnet/.docker owner=dbnet group=dbnet recurse=yes
