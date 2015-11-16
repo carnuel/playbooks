@@ -1,0 +1,9 @@
+- hosts: database:databasetest
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+  - name: Clear containers
+    shell: "clearContainers"
+
+  - name: Clear images
+    shell: "clearImages"

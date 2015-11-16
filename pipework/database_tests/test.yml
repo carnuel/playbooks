@@ -1,0 +1,7 @@
+---
+# file: test.yml
+- include: database.yml
+- include: cadvisor.yml
+- include: dummycontainer.yml
+- include: dummycontainer2.yml
+
