@@ -1,5 +1,4 @@
-# Create drop-in folder and and copy drop-in file
-- hosts: test
+- hosts: swarm-nodes
   sudo: yes
   gather_facts: yes
   remote_user: dbnet

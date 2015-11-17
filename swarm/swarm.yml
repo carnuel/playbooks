@@ -1,0 +1,36 @@
+---
+- hosts: swarm-manager:swarm-nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+  - name: Clear containers
+    shell: clearContainers
+
+- include: start_consul_on_manager.yml
+
+- include: daemon_config_on_nodes.yml
+
+- include: hadoop_resources_on_nodes.yml
+
+- hosts: swarm-nodes
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+  - name: Join cluster
+    shell: docker run -d swarm join --addr={{ ansible_eth0.ipv4.address }}:2375 consul://136.199.51.110:8500
+
+- hosts: swarm-manager
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+  - name: Run manager
+    shell: docker run -d -p 2375:2375 swarm manage consul://136.199.51.110:8500
+
+  - name: Create overlay network
+    shell: docker -H 0.0.0.0:2375 network create --driver overlay hadoop-cluster
+ 
+  - name: Run hadoop containers with names
+    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="master" --name="master" carnuel/hadoop
