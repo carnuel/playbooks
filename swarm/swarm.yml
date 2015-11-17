@@ -32,5 +32,11 @@
   - name: Create overlay network
     shell: docker -H 0.0.0.0:2375 network create --driver overlay hadoop-cluster
  
-  - name: Run hadoop containers with names
-    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="master" --name="master" carnuel/hadoop
+  - name: Run hadoop container with name master
+    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="master" --name="master" carnuel/hadoop -d
+
+  - name: Run hadoop container with name slave01
+    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="slave01" --name="slave01" carnuel/hadoop -d
+
+  - name: Run hadoop container with name slave02
+    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="slave02" --name="slave02" carnuel/hadoop -d
