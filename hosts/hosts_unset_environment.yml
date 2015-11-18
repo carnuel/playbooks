@@ -6,5 +6,6 @@
 
   - name: Remove DOCKER_TLS_VERIFY from /etc/environment
     shell: sed -i "/^DOCKER_TLS_VERIFY=/d" /etc/environment
-  - name: Add DOCKER_TLS_VERIFY to /etc/environment 
-    shell: sed -i '$ a\DOCKER_TLS_VERIFY=1' /etc/environment
+
+  - name: Remove HADOOP_PREFIX from /etc/environment
+    shell: sed -i "/^HADOOP_PREFIX=/d" /etc/environment

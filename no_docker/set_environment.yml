@@ -1,0 +1,30 @@
+- hosts: swarm-nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Remove HADOOP variables from /etc/environment
+    shell: sed -i "/^HADOOP/d" /etc/environment
+
+  - name: Add HADOOP_PREFIX to /etc/environment
+    shell: sed -i '$ a\HADOOP_PREFIX=/usr/local/hadoop' /etc/environment
+
+  - name: Add HADOOP_HOME to /etc/environment
+    shell: sed -i '$ a\HADOOP_HOME=$HADOOP_PREFIX' /etc/environment
+
+  - name: Add HADOOP_COMMON_HOME to /etc/environment
+    shell: sed -i '$ a\HADOOP_COMMON_HOME=$HADOOP_PREFIX' /etc/environment
+
+  - name: Add HADOOP_CONF_DIR to /etc/environment
+    shell: sed -i '$ a\HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop /etc/environment
+
+  - name: Add HADOOP_HDFS_HOME to /etc/environment
+    shell: sed -i '$ a\HADOOP_HDFS_HOME=$HADOOP_PREFIX' /etc/environment
+
+  - name: Add HADOOP_MAPRED_HOME to /etc/environment
+    shell: sed -i '$ a\HADOOP_MAPRED_HOME=$HADOOP_PREFIX' /etc/environment
+
+  - name: Add HADOOP_YARN_HOME to /etc/environment
+    shell: sed -i '$ a\HADOOP_YARN_HOME=$HADOOP_PREFIX' /etc/environment
+

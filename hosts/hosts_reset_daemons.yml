@@ -2,7 +2,7 @@
   sudo: yes
   remote_user: dbnet
   gather_facts: no
-  tasks:
+  tasks: 
   - name: Check if drop in already exists
     stat: path=/etc/systemd/system/docker.service.d
     register: dropInFolder
@@ -18,3 +18,6 @@
   - name: systemctl restart docker
     when: systemctlDaemonReloaded|success
     shell: systemctl restart docker
+
+  - name: Clear containers
+    shell: clearContainers

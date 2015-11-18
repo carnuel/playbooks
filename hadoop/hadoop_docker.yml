@@ -1,23 +1,31 @@
-- hosts: test
+---
+# On cluster
+- include: ../hosts/hosts_reset_daemons.yml
+# On manager
+- include: ../database/database.yml
+# On nodes
+- include: ../database/cadvisor.yml
+
+- hosts: swarm-nodes
   sudo: yes
   gather_facts: no
   remote_user: dbnet
   tasks:
   - name: Creating resource folder
-    register: foldercreated
+    register: folderCreated
     file: path=/home/dbnet/resources state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
 
-  - name: Copying the cluster config to all hosts
-    when: foldercreated|success
-    register: configcopied
+  - name: Copying the resources to all hosts
+    when: folderCreated|success
+    register: resourcesCopied
     copy: src=/media/usb1/masterthesis/config-files/resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
 
   - name: Pulling newest docker image
     when: configcopied|success
     register: imagepulled
-    command: docker pull carnuel/hadoop-cluster:v2
+    shell: docker pull carnuel/hadoop
 
   - name: Running image
     when: imagepulled|success
     register: running
-    command: docker run -d -v /home/dbnet/resources:/mnt --net="host" carnuel/hadoop
+    shell: docker run -itd -v /home/dbnet/resources:/mnt --net="host" carnuel/hadoop
