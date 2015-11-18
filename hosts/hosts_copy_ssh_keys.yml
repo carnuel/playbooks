@@ -1,0 +1,13 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Copy private key
+    copy: src=/media/usb1/masterthesis/ssh_keys/id_rsa dest=/home/dbnet/.ssh/id_rsa owner=dbnet group=dbnet mode=600
+
+  - name: Copy public key
+    copy: src=/media/usb1/masterthesis/ssh_keys/id_rsa.pub dest=/home/dbnet/.ssh/id_rsa.pub owner=dbnet group=dbnet mode=644
+
+  - name: add pub to auth. keys
+    shell: cat .ssh/id_rsa.pub >> .ssh/authorized_keys
