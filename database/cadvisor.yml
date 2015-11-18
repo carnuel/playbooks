@@ -1,0 +1,16 @@
+- hosts: swarm-nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  vars:
+    database_ip: 136.199.51.110
+  tasks:
+
+  - name: Pulling newest docker image
+    register: imagepulled
+    shell: docker pull axibase/cadvisor:latest
+
+  - name: Running image
+    when: imagepulled|success
+    register: running
+    shell: docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor axibase/cadvisor:latest --storage_driver=atsd --storage_driver_user=user --storage_driver_password=user --atsd_storage_url=http://{{ database_ip }}:8088 --atsd_storage_write_host={{ database_ip }}:8081 --atsd_storage_write_protocol=tcp --atsd_storage_docker_host={{ ansible_hostname }}

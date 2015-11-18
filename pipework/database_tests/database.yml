@@ -1,4 +1,4 @@
-- hosts: database
+- hosts: swarm-manager
   sudo: yes
   remote_user: dbnet
   tasks:

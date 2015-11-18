@@ -7,23 +7,32 @@
   - name: Clear containers
     shell: clearContainers
 
+# On manager
+- include: ../database/database.yml
 - include: start_consul_on_manager.yml
-
+# On nodes
 - include: daemon_config_on_nodes.yml
-
+- include: ../database/cadvisor.yml
 - include: hadoop_resources_on_nodes.yml
 
 - hosts: swarm-nodes
   sudo: yes
-  gather_facts: yes
   remote_user: dbnet
   tasks:
   - name: Join cluster
     shell: docker run -d swarm join --addr={{ ansible_eth0.ipv4.address }}:2375 consul://136.199.51.110:8500
 
-- hosts: swarm-manager
+- hosts: swarm-nodes
   sudo: yes
-  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+  - name: Pull newest image
+    shell: docker pull carnuel/hadoop
+
+- hosts: swarm-manager
+  roles:
+    - names
+  sudo: yes
   remote_user: dbnet
   tasks:
   - name: Run manager
@@ -32,11 +41,6 @@
   - name: Create overlay network
     shell: docker -H 0.0.0.0:2375 network create --driver overlay hadoop-cluster
  
-  - name: Run hadoop container with name master
-    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="master" --name="master" carnuel/hadoop -d
-
-  - name: Run hadoop container with name slave01
-    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="slave01" --name="slave01" carnuel/hadoop -d
-
-  - name: Run hadoop container with name slave02
-    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname="slave02" --name="slave02" carnuel/hadoop -d
+  - name: Run hadoop containers with specified names
+    shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname={{ item }}  --name={{ item }} carnuel/hadoop -d
+    with_items: names
