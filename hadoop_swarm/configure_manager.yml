@@ -22,5 +22,5 @@
     shell: rm container_Names.txt
 
   - name: Save long docker-name of Hadoop Containers to file
-    shell: echo -n $(docker -H 0.0.0.0:2375 inspect --format={{'{{'}}.Node.Name{{'}}'}} {{item}}) >> container_Names.txt ; echo -n '%2Fsystem.slice%2Fdocker$
+    shell: echo -n $(docker -H 0.0.0.0:2375 inspect --format={{'{{'}}.Node.Name{{'}}'}} {{item}}) >> container_Names.txt ; echo -n '%2Fsystem.slice%2Fdocker-' >> container_Names.txt ; echo $(docker -H 0.0.0.0:2375 inspect --format={{'{{'}}.Id{{'}}'}} {{item}}) >> container_Names.txt
     with_items: names
