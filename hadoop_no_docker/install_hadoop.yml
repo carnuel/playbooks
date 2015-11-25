@@ -1,34 +1,31 @@
----
-# Set HADOOP_PREFIX
-- include: set_environment.yml
-
 - hosts: swarm-nodes
   sudo: yes
   gather_facts: no
   remote_user: dbnet
   tasks:
 
-  - name: Check if tar exists
-    stat: path=/home/dbnet/hadoop-2.7.1.tar.gz
-    register: hadoop_tar
-  - name: Download hadoop
-    when: hadoop_tar.stat.exists == False
-    get_url: url=http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz dest=/home/dbnet/hadoop-2.7.1.tar.gz
-    register: downloaded
-
   - name: Check if tar has been unpacked
     stat: path=/usr/local/hadoop-2.7.1
     register: hadoop_unpacked
 
+  - name: Download hadoop
+    when: hadoop_unpacked.stat.exists == False
+    get_url: url=http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz dest=/home/dbnet/hadoop-2.7.1.tar.gz
+    register: downloaded
+
   - name: Unpack hadoop-2.7.1.tar.gz
-    when: hadoop_unpacked.stat.exists == False and (downloaded|success or downloaded|skipped)
+    when: downloaded|success
     unarchive: src=/home/dbnet/hadoop-2.7.1.tar.gz dest=/usr/local/ copy=no
     register: unpacked
+
+  - name: Delete tar.gz
+    when: unpacked|success
+    shell: rm /home/dbnet/hadoop-2.7.1.tar.gz
 
   - name: Set symbolic link
     when: unpacked|success
     shell: cd /usr/local && ln -s ./hadoop-2.7.1 hadoop
-    
+
   - name: SED hadoop files
     when: unpacked|success
     shell: sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/java/default\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && sed -i '/^export HADOOP_CONF_DIR/ s:.*:export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop/:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh

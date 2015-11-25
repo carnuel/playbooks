@@ -1,39 +1,48 @@
-docker_hadoop.yml
-playbook that runs 1 hadoop container on each node using --net="host"
-
-
-
-
-no_docker_hadoop.yml
-playbook that runs hadoop on each node, independent from docker
-
-
-
-
-Folder basics:
-contains basic operations like 
+basics:
 - clear_containers
 - clear_images
 - docker_restart
 
 
 
-
-Folder hosts:
-contains host operations like 
-- setting environmental variables
-- copy ssh or tls keys
-- copy docker daemon config
-- restart server
+database:
+- cadvisor on nodes
+- database on manager
 
 
 
-
-Folder pipework:
-contains all operations related to pipework
-
+hadoop_docker:
+- main playbook for running hadoop using host interface, includes database
 
 
 
-Folder setup:
-contains installing and uninstalling operations
+hadoop_no_docker:
+- main playbook for installing hadoop and setting up configurations
+- set/unset HADOOP - environment variables
+- install/delete hadoop
+- copy resources
+
+
+
+hadoop_swarm:
+- main playbook for setting up swarm and starting hadoop, includes database
+- clearcontainers
+- daemon configuration
+
+
+
+hosts:
+- basic operations on hosts
+- TLS and SSH
+- reboot 
+- reset daemons
+
+
+
+install:
+- install/uninstall playbooks for docker, compose, machine, consul, virtualbox
+
+
+
+pipwork:
+- pre-swarm setup

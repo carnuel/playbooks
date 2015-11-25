@@ -1,0 +1,17 @@
+---
+# On manager and nodes
+- include: clear_containers.yml
+
+# On manager
+- include: ../database/database.yml
+- include: start_consul_on_manager.yml
+
+# On nodes
+- include: daemon_config_on_nodes.yml
+- include: ../database/cadvisor.yml
+- include: hadoop_resources_on_nodes.yml
+- include: configure_nodes.yml               # Join and pull image
+
+# On manager
+- include: configure_manager.yml             # Manage, create overlay, start container
+

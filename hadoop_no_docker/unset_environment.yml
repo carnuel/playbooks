@@ -1,0 +1,8 @@
+- hosts: swarm-nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Remove HADOOP variables from /etc/environment
+    shell: sed -i "/^HADOOP/d" /etc/environment

@@ -1,0 +1,25 @@
+---
+# Set HADOOP_PREFIX
+- include: unset_environment.yml
+
+- hosts: swarm-nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if tar exists
+    stat: path=/home/dbnet/hadoop-2.7.1.tar.gz
+    register: hadoop_tar
+
+  - name: Del hadoop tar
+    when: hadoop_tar.stat.exists == True
+    shell: rm -rf /home/dbnet/hadoop-2.7.1.tar.gz
+
+  - name: Check if tar has been unpacked
+    stat: path=/usr/local/hadoop-2.7.1
+    register: hadoop_unpacked
+
+  - name: Del hadoop folder
+    when: hadoop_unpacked.stat.exists == True
+    shell: rm -rf /usr/local/hadoop*
