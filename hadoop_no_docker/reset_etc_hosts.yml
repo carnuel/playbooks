@@ -1,0 +1,16 @@
+- hosts: test
+  sudo: yes
+  remote_user: dbnet
+  roles:
+    - names
+  tasks:
+
+  - name: Change host ip entry to 127.0.1.1
+    shell: sed -i "s/{{ ansible_eth0.ipv4.address }}/127.0.1.1/" /etc/hosts
+
+  - name: Remove all entries specified in the roles
+    shell: sed -i "/^{{ item }}/d" /etc/hosts
+    with_items: entries
+
+  - name: Edit localhost
+    shell: sed -i '/127.0.0.1/c 127.0.0.1\tlocalhost' /etc/hosts

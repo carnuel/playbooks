@@ -1,0 +1,22 @@
+---
+- include: reset_etc_hosts.yml
+
+- hosts: test
+  roles:
+    - names
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Add all hosts
+    shell: sed -i '$ a\{{ item }}' /etc/hosts
+    with_items: entries
+
+  - name: Remove own role entry
+    shell: sed -i "/^{{ ansible_eth0.ipv4.address }}/d" /etc/hosts
+
+  - name: Edit 127.0.1.1 to own host ip
+    shell: sed -i "s/127.0.1.1/{{ ansible_eth0.ipv4.address }}/" /etc/hosts
+
+  - name: Edit localhost
+    shell: sed -i '/127.0.0.1/c 127.0.0.1\tlocalhost\tlocalhost' /etc/hosts
