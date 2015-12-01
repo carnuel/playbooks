@@ -1,7 +1,6 @@
----
-- include: reset_etc_hosts.yml
-
-- hosts: test
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
   roles:
     - names
   sudo: yes

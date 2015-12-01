@@ -1,0 +1,9 @@
+---
+# On cluster
+- include: ../basics/reset_daemons.yml hosts=cluster
+# On manager
+- include: ../database/database.yml hosts=manager
+# On nodes
+- include: ../database/cadvisor.yml hosts=nodes
+
+- include: start.yml hosts=nodes

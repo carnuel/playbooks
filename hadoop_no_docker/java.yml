@@ -1,7 +1,0 @@
-- hosts: swarm-nodes
-  sudo: yes
-  remote_user: dbnet
-  tasks:
-  - name: SED hadoop files
-    when: unpacked|success
-    shell: sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/java-8-oracle\nexport HADOOP_PREFIX=/usr/local/hadoop\nexport HADOOP_HOME=/usr/local/hadoop\n:' $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh 

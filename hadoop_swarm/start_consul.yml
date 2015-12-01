@@ -1,7 +1,10 @@
-- hosts: swarm-manager
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: manager
   sudo: yes
   gather_facts: no
   remote_user: dbnet
   tasks:
+
   - name: Start consul
     shell: docker run -d -p "8500:8500" --hostname="consul" --name="consul" progrium/consul -server -bootstrap

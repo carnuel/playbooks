@@ -1,5 +1,7 @@
 ---
-- hosts: swarm-manager
+- hosts: "{{ hosts }}"
+  vars: 
+    hosts: manager
   roles:
     - metrics
   sudo: yes

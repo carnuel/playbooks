@@ -1,0 +1,17 @@
+---
+# On manager and nodes
+- include: ../basics/clear_containers.yml hosts=cluster
+
+# On manager
+- include: ../database/database.yml hosts=manager
+- include: start_consul.yml hosts=manager
+
+# On nodes
+- include: daemon_config.yml hosts=nodes
+- include: ../database/cadvisor.yml hosts=nodes
+- include: hadoop_resources.yml hosts=nodes
+- include: join_cluster.yml hosts=nodes               # Join and pull image
+- include: pull_image.yml hosts=nodes
+# On manager
+- include: manage_cluster.yml hosts=manager             # Manage, create overlay, start container
+

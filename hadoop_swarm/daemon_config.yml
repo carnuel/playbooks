@@ -1,8 +1,10 @@
-- hosts: swarm-nodes
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
   sudo: yes
-  gather_facts: yes
   remote_user: dbnet
   tasks:
+
   - name: Check if drop in already exists
     stat: path=/etc/systemd/system/docker.service.d
     register: dropInFolder

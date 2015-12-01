@@ -1,4 +1,6 @@
-- hosts: test
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
   sudo: yes
   remote_user: dbnet
   roles:
