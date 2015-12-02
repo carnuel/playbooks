@@ -16,13 +16,9 @@
     register: downloaded
 
   - name: Unpack hadoop-2.7.1.tar.gz
-    when: downloaded|success
+    when: downloaded|success or downloaded|skipped
     unarchive: src=/home/dbnet/hadoop-2.7.1.tar.gz dest=/usr/local/ copy=no
     register: unpacked
-
-  - name: Delete tar.gz
-    when: unpacked|success
-    shell: rm /home/dbnet/hadoop-2.7.1.tar.gz
 
   - name: Set symbolic link
     when: unpacked|success

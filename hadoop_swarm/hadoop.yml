@@ -9,7 +9,7 @@
 # On nodes
 - include: daemon_config.yml hosts=nodes
 - include: ../database/cadvisor.yml hosts=nodes
-- include: hadoop_resources.yml hosts=nodes
+- include: copy_resources.yml hosts=nodes
 - include: join_cluster.yml hosts=nodes               # Join and pull image
 - include: pull_image.yml hosts=nodes
 # On manager
