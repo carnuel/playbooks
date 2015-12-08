@@ -1,0 +1,65 @@
+---
+- hosts: "{{ hosts }}"
+  vars: 
+    hosts: nodes
+    namesFile: /tmp/container_names.txt
+    filler: '%2Fsystem.slice%2Fdocker-'
+    namesDest: /tmp/container_names/docker_no_swarm
+  roles:
+    - metrics
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Save long docker-name of Hadoop Containers to file
+    shell: echo $(docker inspect -f {{'{{'}}.Name{{'}}'}} {{ ansible_hostname }}){{ filler }}$(docker inspect -f {{'{{'}}.Id{{'}}'}} {{ ansible_hostname }}) > {{ namesFile }}
+
+  - name: Fetch name file
+    fetch: src={{ namesFile }} dest={{ namesDest }}/{{ ansible_hostname }}.txt flat=yes
+
+- hosts: 127.0.0.1
+  vars:
+    namesDest: /tmp/container_names/docker_no_swarm
+  gather_facts: no
+  connection: local
+  tasks:
+
+  - name: Create names file
+    shell: cat {{ namesDest }}/*.txt > {{ namesDest }}/container_names.txt
+
+- hosts: manager
+  vars:
+    namesFile: /tmp/container_names.txt
+    namesDest: /tmp/container_names/docker_no_swarm
+    csvPath: /tmp/csv/docker_no_swarm
+  roles:
+    - metrics
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Copy container names to manager
+    copy: src={{ namesDest }}/container_names.txt dest={{ namesFile }} owner=dbnet group=dbnet mode=644
+
+  - name: Get Hadoop-Container Docker-Id-Names
+    shell: cat {{ namesFile }}
+    register: conNames
+
+  - name: Creating output folder 'csv'
+    register: folderCreated
+    file: path={{ csvPath }} state=directory owner=dbnet group=dbnet mode=0774 
+
+  - name: Run curl command for Database for each Name and Metric
+    shell: curl -u user:user -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}.scope%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
+    with_nested:
+      - conNames.stdout_lines
+      - metrics
+
+  - name: Zip csv folder
+    shell: tar -zcf {{ csvPath }}.tar.gz {{ csvPath }}
+
+  - name: Fetch csv
+    fetch: src={{ csvPath }}.tar.gz  dest={{ csvPath }}.tar.gz flat=yes
+

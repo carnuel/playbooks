@@ -1,0 +1,17 @@
+---
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: manager
+    namesFile: /tmp/container_names.txt
+    filler: '%2Fsystem.slice%2Fdocker-'
+    csvPath: /tmp/csv/swarm
+  roles:
+    - names
+    - metrics
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: fetch csv files
+    fetch: src={{ csvPath }}.tar.gz dest={{ csvPath }}/ flat=yes

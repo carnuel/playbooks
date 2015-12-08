@@ -1,0 +1,36 @@
+---
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: manager
+    logDest: /tmp/hadoop_logs/swarm
+    logSrc: /usr/local/hadoop/logs
+  roles:
+    - names
+    - metrics
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if logs folder exists
+    stat: path={{ logDest }}
+    register: logs
+
+  - name: Remove existing log folder
+    when: logs.stat.exists
+    shell: rm -rf {{ logDest }}
+
+  - name: Create log folder
+    file: path={{ logDest }} state=directory owner=dbnet group=dbnet mode=0774
+
+  - name: Copy hadoop logs 
+    shell: docker -H 0.0.0.0:2375 cp $(docker -H 0.0.0.0:2375 ps -f "name={{ item }}" -q):{{ logSrc }} {{ logDest }}
+    with_items: names
+
+  - name: zip log folder
+    shell: zip log.zip *
+    args:
+      chdir: "{{ logDest }}/logs"
+
+  - name: fetch log files
+    fetch: src={{ logDest }}/logs/log.zip dest={{ logDest }}/log.zip flat=yes
