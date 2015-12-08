@@ -16,7 +16,7 @@
     shell: echo $(docker inspect -f {{'{{'}}.Name{{'}}'}} {{ ansible_hostname }}){{ filler }}$(docker inspect -f {{'{{'}}.Id{{'}}'}} {{ ansible_hostname }}) > {{ namesFile }}
 
   - name: Fetch name file
-    fetch: src={{ namesFile }} dest={{ namesDest }}/{{ ansible_hostname }}.txt flat=yes
+    fetch: src={{ namesFile }} dest={{ namesDest }}/{{ ansible_hostname }}-name.txt flat=yes
 
 - hosts: 127.0.0.1
   vars:
@@ -26,7 +26,7 @@
   tasks:
 
   - name: Create names file
-    shell: cat {{ namesDest }}/*.txt > {{ namesDest }}/container_names.txt
+    shell: cat {{ namesDest }}/*-name.txt > {{ namesDest }}/container_names.txt
 
 - hosts: manager
   vars:
@@ -58,8 +58,19 @@
       - metrics
 
   - name: Zip csv folder
-    shell: tar -zcf {{ csvPath }}.tar.gz {{ csvPath }}
+    shell: zip csv.zip *
+    args:
+      chdir: "{{ csvPath }}"
 
   - name: Fetch csv
-    fetch: src={{ csvPath }}.tar.gz  dest={{ csvPath }}.tar.gz flat=yes
+    fetch: src={{ csvPath }}/csv.zip  dest={{ csvPath }}.zip flat=yes
 
+- hosts: 127.0.0.1
+  vars:
+    namesDest: /tmp/container_names/docker_no_swarm
+  gather_facts: no
+  connection: local
+  tasks:
+
+  - name: Remove names files
+    shell: rm -rf {{ namesDest }}

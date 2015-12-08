@@ -22,12 +22,14 @@
   - name: Creating logs folder
     file: path={{ logDest }} state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
 
-  - name: Copy hadoop logs to $HOME
+  - name: Copy hadoop logs
     shell: docker cp {{ ansible_hostname }}:{{ logSrc }} {{ logDest }}
 
   - name: zip log files
-    shell: zip {{ logDest}}.zip {{ logDest }}
+    shell: zip log.zip *
+    args:
+      chdir: "{{ logDest }}/logs"
 
   - name: fetch log files
-    fetch: src={{ logDest }}.tar.gz dest={{ logDest }}-{{ ansible_hostname }}.tar.gz flat=yes
+    fetch: src={{ logDest }}/logs/log.zip dest={{ logDest }}/{{ ansible_hostname }}.zip flat=yes
 
