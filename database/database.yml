@@ -6,11 +6,11 @@
   remote_user: dbnet
   tasks:
 
-  - name: Pulling newest docker image
+  - name: Pulling newest axibase/atsd image
     register: imagepulled
     shell: docker pull axibase/atsd:latest
 
-  - name: Running image
+  - name: Running atsd
     when: imagepulled|success
     register: running
     shell: docker run -d -p 5022:22 -p 8088:8088 -p 8081:8081 -p 8084:8084 -p 8082:8082/udp -e AXIBASE_USER_PASSWORD=user -e ATSD_USER_NAME=user -e ATSD_USER_PASSWORD=user -h atsd --name=atsd axibase/atsd:latest

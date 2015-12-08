@@ -1,0 +1,59 @@
+---
+- hosts: "{{ hosts }}"
+  vars: 
+    hosts: manager
+    namesFile: /home/dbnet/container_names.txt
+    logDest: /home/dbnet/hadoop_logs/swarm
+    logSrc: /usr/local/hadoop/logs
+    filler: '%2Fsystem.slice%2Fdocker-'
+  roles:
+    - names
+    - metrics
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if logs folder exists
+    stat: path={{ logDest }}
+    register: logs
+
+  - name: Remove existing log folder
+    when: logs.stat.exists
+    shell: rm -rf {{ logDest }}
+
+  - name: Create
+    file: path={{ logDest }} state=directory owner=dbnet group=dbnet mode=0774
+
+  - name: Copy hadoop logs to $HOME
+    shell: docker -H 0.0.0.0:2375 cp $(docker -H 0.0.0.0:2375 ps -f "name={{ item }}" -q):{{ logSrc }} {{ logDest }}/{{ item }}
+    with_items: names
+
+#  - name: Fetch log files
+#    fetch: src={{ logDest}} dest=/media/usb1/masterthesis/experiments/swarm flat=yes validate_checksum=no
+
+  - name: Check if names file exists
+    stat: path={{ namesFile }}
+    register: file
+
+  - name: Delete old names file
+    when: file.stat.exists
+    shell: rm {{ namesFile }}
+
+  - name: Save long docker-name of Hadoop Containers to file
+    shell: echo $(docker -H 0.0.0.0:2375 inspect -f {{'{{'}}.Node.Name{{'}}'}} {{ item }}){{ filler }}$(docker -H 0.0.0.0:2375 inspect -f {{'{{'}}.Id{{'}}'}} {{ item }}) >> {{ namesFile }}
+    with_items: names
+
+  - name: Get Hadoop-Container Docker-Id-Names
+    shell: cat {{ namesFile }}
+    register: conNames
+
+  - name: Creating output folder 'csv'
+    register: folderCreated
+    file: path=/home/dbnet/csv state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
+
+  - name: Run curl command for Database for each Name and Metric
+    shell: curl -u user:user -o csv/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}.scope%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
+    with_nested:
+      - conNames.stdout_lines
+      - metrics

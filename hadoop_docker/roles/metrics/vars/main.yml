@@ -1,0 +1,5 @@
+---
+metrics:
+  - cadvisor.cpu.usage.total%
+  - cadvisor.memory.usage
+  - cadvisor.diskio.ioserviced.write

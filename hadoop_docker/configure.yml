@@ -2,9 +2,10 @@
   vars:
     hosts: nodes
   sudo: yes
-  gather_facts: no
+  gather_facts: yes
   remote_user: dbnet
   tasks:
+
   - name: Creating resource folder
     register: folderCreated
     file: path=/home/dbnet/resources state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
@@ -14,12 +15,11 @@
     register: resourcesCopied
     copy: src=/media/usb1/masterthesis/config-files/resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
 
-  - name: Pulling newest docker image
-    when: configcopied|success
-    register: imagepulled
+  - name: Pulling newest carnuel/hadoop image
+    when: resourcesCopied|success
+    register: imagePulled
     shell: docker pull carnuel/hadoop
 
-  - name: Running image
-    when: imagepulled|success
-    register: running
-    shell: docker run -itd -v /home/dbnet/resources:/mnt --net="host" carnuel/hadoop
+  - name: Running hadoop
+    when: imagePulled|success
+    shell: docker run -itd -v /home/dbnet/resources:/mnt --net="host" --name="{{ ansible_hostname }}" carnuel/hadoop -d
