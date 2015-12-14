@@ -13,7 +13,7 @@
   tasks:
 
   - name: Save long docker-name of Hadoop Containers to file
-    shell: echo $(docker inspect -f {{'{{'}}.Name{{'}}'}} {{ ansible_hostname }}){{ filler }}$(docker inspect -f {{'{{'}}.Id{{'}}'}} {{ ansible_hostname }}) > {{ namesFile }}
+    shell: echo $(docker inspect -f {{'{{'}}.Name{{'}}'}} {{ ansible_hostname }}){{ filler }}$(docker inspect -f {{'{{'}}.Id{{'}}'}} {{ ansible_hostname }}) | cut -c 2- > {{ namesFile }}
 
   - name: Fetch name file
     fetch: src={{ namesFile }} dest={{ namesDest }}/{{ ansible_hostname }}-name.txt flat=yes
