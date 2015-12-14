@@ -32,4 +32,3 @@
 
   - name: fetch log files
     fetch: src={{ logDest }}/logs/log.zip dest={{ logDest }}/{{ ansible_hostname }}.zip flat=yes
-

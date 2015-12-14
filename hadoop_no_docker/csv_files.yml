@@ -27,6 +27,7 @@
     when: file.stat.exists
     shell: rm {{ namesFile }}
 
+# TODO HIER EINFPGEN
   - name: Save name to search in database
     shell: echo {{ item }}{{ filler }} >> {{ namesFile }}
     with_items: names
