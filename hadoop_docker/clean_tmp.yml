@@ -1,0 +1,41 @@
+---
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes:manager
+    zip: /tmp/zips/
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if zips folder exists
+    stat: path={{ zip }}
+    register: folder
+
+  - name: Remove old folder
+    when: folder.stat.exists
+    shell: rm -rf {{ zip }}
+
+  - name: Creating new zip-folder
+    register: folderCreated
+    file: path={{ zip }} state=directory owner=dbnet group=dbnet mode=0774
+
+- hosts: 127.0.0.1
+  vars:
+     zip: /tmp/zips/
+  gather_facts: yes
+  connection: local
+  tasks:
+
+  - name: Check if zips folder exists
+    stat: path={{ zip }}
+    register: folder
+
+  - name: Remove old folder
+    when: folder.stat.exists
+    shell: rm -rf {{ zip }}
+
+  - name: Creating new zip-folder
+    register: folderCreated
+    file: path={{ zip }} state=directory group=masterthesis mode=0774
+

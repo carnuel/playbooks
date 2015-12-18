@@ -32,7 +32,7 @@
   vars:
     namesFile: /tmp/container_names.txt
     namesDest: /tmp/container_names/docker_no_swarm
-    csvPath: /tmp/csv/docker_no_swarm
+    csvPath: /tmp/zips/docker_no_swarm
   roles:
     - metrics
   sudo: yes
@@ -46,14 +46,6 @@
   - name: Get Hadoop-Container Docker-Id-Names
     shell: cat {{ namesFile }}
     register: conNames
-
-  - name: Check if csv folder exists
-    stat: path={{ csvPath }}
-    register: folder
-
-  - name: Remove old folder
-    when: folder.stat.exists
-    shell: rm -rf {{ csvPath }}
 
   - name: Creating output folder 'csv'
     register: folderCreated
@@ -71,7 +63,7 @@
       chdir: "{{ csvPath }}"
 
   - name: Fetch csv
-    fetch: src={{ csvPath }}/csv.zip  dest=/tmp/zips/csv/docker_no_swarm.zip flat=yes
+    fetch: src={{ csvPath }}/csv.zip  dest=/tmp/zip/csv/docker_no_swarm.zip flat=yes
 
 - hosts: 127.0.0.1
   vars:

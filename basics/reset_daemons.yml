@@ -1,5 +1,7 @@
-- hosts: cluster
+- hosts: '{{ hosts }}'
   sudo: yes
+  vars:
+    hosts: cluster
   remote_user: dbnet
   gather_facts: no
   tasks: 

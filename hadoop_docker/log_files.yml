@@ -2,7 +2,7 @@
 - hosts: "{{ hosts }}"
   vars:
     hosts: nodes
-    logDest: /tmp/hadoop_logs/docker_no_swarm
+    logDest: /tmp/zips/docker_no_swarm/
     logSrc: /usr/local/hadoop/logs
   roles:
     - metrics
@@ -25,10 +25,15 @@
   - name: Copy hadoop logs
     shell: docker cp {{ ansible_hostname }}:{{ logSrc }} {{ logDest }}
 
+  - name: delete security.auth
+    shell: rm Sec*
+    args:
+      chdir: "{{ logDest }}/logs"
+
   - name: zip log files
     shell: zip log.zip *
     args:
       chdir: "{{ logDest }}/logs"
 
   - name: fetch log files
-    fetch: src={{ logDest }}/logs/log.zip dest={{ logDest }}/{{ ansible_hostname }}.zip flat=yes
+    fetch: src={{ logDest }}/logs/log.zip dest=/tmp/zips/logs/{{ ansible_hostname }}.zip flat=yes

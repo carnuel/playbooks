@@ -1,0 +1,36 @@
+---
+- hosts: 127.0.0.1
+  vars:
+    Dest: /media/usb1/masterthesis/experiments/docker_no_swarm/
+    Src: /tmp/zips/
+  gather_facts: yes
+  connection: local
+  tasks:
+
+  - name: set Timestamp for experiment
+    set_fact: timestamp="{{lookup('pipe','date +%Y-%m-%d_%H-%M-%S')}}" 
+
+  - name: Check if destination folder exists
+    stat: path={{ Dest }}/{{ timestamp }}
+    register: folder
+
+  - name: Remove old folder
+    when: folder.stat.exists
+    shell: rm -rf {{ Dest }}/{{ timestamp }}
+
+  - name: Creating timestamped folder
+    file: path={{ Dest }}/{{ timestamp }} state=directory group=masterthesis mode=0774 recurse=yes
+
+  - name: Creating log folder
+    file: path={{ Dest }}/{{ timestamp }}/logs state=directory group=masterthesis mode=0774 recurse=yes
+
+  - name: Creating csv folder
+    file: path={{ Dest }}/{{ timestamp }}/csv state=directory group=masterthesis mode=0774 recurse=yes
+
+  - name: unzip hadoop logs
+    shell: unzip '*.zip' -d {{ Dest }}/{{ timestamp }}/logs chdir={{ Src }}/logs
+
+  - name: unzip hadoop csv
+    shell: unzip -o '*.zip' -d {{ Dest }}/{{ timestamp }}/csv chdir={{ Src }}/csv
+
+

@@ -1,5 +1,5 @@
 ---
-- include: ../basics/clear_containers.yml hosts=cluster
+- include: ../basics/clear_containers.yml hosts=nodes:manager
 - include: ../database/database.yml hosts=manager
 - include: ../database/cadvisor.yml hosts=nodes
 

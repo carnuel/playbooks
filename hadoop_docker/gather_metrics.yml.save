@@ -1,0 +1,14 @@
+---
+- hosts: 127.0.0.1
+
+  gather_facts: no
+  connection: local
+  tasks:
+
+  #- name: Create timestamp for this Run
+   # shell: date +"%y-%m-%d_%H-%M-%S"
+   # shell: echo "statisch"
+   # register: timestamp
+
+- include: log_files.yml hosts=nodes stamp={{timestamp}}
+#- include: csv_files.yml hosts=nodes stamp={{timestamp}}
