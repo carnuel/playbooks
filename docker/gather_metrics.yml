@@ -1,0 +1,9 @@
+---
+- include: ../basics/empty_tmp.yml hosts=manager:nodes
+
+- include: log_files.yml hosts=nodes
+- include: csv_files.yml hosts=nodes
+
+- include: ../basics/unzip.yml dest=/media/usb1/masterthesis/experiments/docker
+
+- include: ../basics/empty_tmp.yml hosts=manager:nodes

@@ -1,21 +1,17 @@
 - hosts: "{{ hosts }}"
   vars:
     hosts: nodes
-    logDest: /tmp/hadoop_logs/no_docker
+    logDest: /tmp/zips
     logSrc: /usr/local/hadoop/logs
   sudo: yes
   gather_facts: no
   remote_user: dbnet
   tasks:
 
-  - name: Check if log files exist
-    stat: path={{ logSrc }}
-    register: logs
-
   - name: zip log folder
-    shell: zip log.zip *
+    shell: zip logs.zip *
     args:
       chdir: "{{ logSrc }}"
 
   - name: fetch log files
-    fetch: src={{ logSrc }}/log.zip dest={{ logDest }}/log.zip flat=yes
+    fetch: src={{ logSrc }}/logs.zip dest={{ logDest }}/logs/logs.zip flat=yes

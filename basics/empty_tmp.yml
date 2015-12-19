@@ -4,7 +4,7 @@
     hosts: nodes:manager
     zip: /tmp/zips/
   sudo: yes
-  gather_facts: yes
+  gather_facts: no
   remote_user: dbnet
   tasks:
 
@@ -12,18 +12,15 @@
     stat: path={{ zip }}
     register: folder
 
-  - name: Remove old folder
+  - name: Remove zip folder
     when: folder.stat.exists
     shell: rm -rf {{ zip }}
-
-  - name: Creating new zip-folder
-    register: folderCreated
-    file: path={{ zip }} state=directory owner=dbnet group=dbnet mode=0774
 
 - hosts: 127.0.0.1
   vars:
      zip: /tmp/zips/
-  gather_facts: yes
+     namesDest: /tmp/container_names
+  gather_facts: no
   connection: local
   tasks:
 
@@ -31,11 +28,15 @@
     stat: path={{ zip }}
     register: folder
 
-  - name: Remove old folder
+  - name: Remove zip folder
     when: folder.stat.exists
     shell: rm -rf {{ zip }}
 
-  - name: Creating new zip-folder
-    register: folderCreated
-    file: path={{ zip }} state=directory group=masterthesis mode=0774
+  - name: Check if names folder exists
+    stat: path={{ namesDest }}
+    register: folder
+
+  - name: Remove names folder
+    when: folder.stat.exists
+    shell: rm -rf {{ namesDest }}
 

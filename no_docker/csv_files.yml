@@ -1,10 +1,9 @@
----
 - hosts: "{{ hosts }}"
   vars:
     hosts: manager
-    namesFile: /tmp/container_names.txt
+    namesFile: /tmp/hadoop_names.txt
     filler: '%2Fsystem.slice%2Fdocker-'
-    csvPath: /tmp/csv/swarm
+    csvPath: /tmp/zips/csv
   roles:
     - names
     - metrics
@@ -21,21 +20,14 @@
     when: file.stat.exists
     shell: rm {{ namesFile }}
 
-  - name: Save long docker-name of Hadoop Containers to file
-    shell: echo $(docker -H 0.0.0.0:2375 inspect -f {{'{{'}}.Node.Name{{'}}'}} {{ item }}){{ filler }}$(docker -H 0.0.0.0:2375 inspect -f {{'{{'}}.Id{{'}}'}} {{ item }}) >> {{ namesFile }}
+# TODO HIER EINFPGEN
+  - name: Save name to search in database
+    shell: echo {{ item }}{{ filler }} >> {{ namesFile }}
     with_items: names
 
-  - name: Get Hadoop-Container Docker-Id-Names
+  - name: Get 
     shell: cat {{ namesFile }}
-    register: conNames
-
-  - name: check if csv folder already exists
-    stat: path={{ csvPath }}
-    register: csvFolder
-
-  - name: delete csv folder
-    when: csvFolder.stat.exists
-    shell: rm -rf {{ csvPath }}
+    register: hadNames
 
   - name: Creating output folder 'csv'
     register: folderCreated
@@ -44,7 +36,7 @@
   - name: Run curl command for Database for each Name and Metric
     shell: curl -u user:user -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}.scope%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
     with_nested:
-      - conNames.stdout_lines
+      - hadNames.stdout_lines
       - metrics
 
   - name: zip csv folder

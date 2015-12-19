@@ -4,7 +4,7 @@
     hosts: nodes
     namesFile: /tmp/container_names.txt
     filler: '%2Fsystem.slice%2Fdocker-'
-    namesDest: /tmp/container_names/docker_no_swarm
+    namesDest: /tmp/container_names
   roles:
     - metrics
   sudo: yes
@@ -20,7 +20,7 @@
 
 - hosts: 127.0.0.1
   vars:
-    namesDest: /tmp/container_names/docker_no_swarm
+    namesDest: /tmp/container_names
   gather_facts: no
   connection: local
   tasks:
@@ -31,8 +31,8 @@
 - hosts: manager
   vars:
     namesFile: /tmp/container_names.txt
-    namesDest: /tmp/container_names/docker_no_swarm
-    csvPath: /tmp/csv/docker_no_swarm
+    namesSrc: /tmp/container_names/container_names.txt
+    csvPath: /tmp/zips/csv
   roles:
     - metrics
   sudo: yes
@@ -41,22 +41,13 @@
   tasks:
 
   - name: Copy container names to manager
-    copy: src={{ namesDest }}/container_names.txt dest={{ namesFile }} owner=dbnet group=dbnet mode=644
+    copy: src={{ namesSrc }} dest={{ namesFile }} owner=dbnet group=dbnet mode=644
 
   - name: Get Hadoop-Container Docker-Id-Names
     shell: cat {{ namesFile }}
     register: conNames
 
-  - name: Check if csv folder exists
-    stat: path={{ csvPath }}
-    register: folder
-
-  - name: Remove old folder
-    when: folder.stat.exists
-    shell: rm -rf {{ csvPath }}
-
   - name: Creating output folder 'csv'
-    register: folderCreated
     file: path={{ csvPath }} state=directory owner=dbnet group=dbnet mode=0774 
 
   - name: Run curl command for Database for each Name and Metric
@@ -71,14 +62,4 @@
       chdir: "{{ csvPath }}"
 
   - name: Fetch csv
-    fetch: src={{ csvPath }}/csv.zip  dest=/tmp/zips/csv/docker_no_swarm.zip flat=yes
-
-- hosts: 127.0.0.1
-  vars:
-    namesDest: /tmp/container_names/docker_no_swarm
-  gather_facts: no
-  connection: local
-  tasks:
-
-  - name: Remove names files
-    shell: rm -rf {{ namesDest }}
+    fetch: src={{ csvPath }}/csv.zip  dest={{ csvPath}}/csv.zip flat=yes

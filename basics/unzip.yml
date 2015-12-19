@@ -1,0 +1,26 @@
+---
+- hosts: 127.0.0.1
+  vars:
+    zip: /tmp/zips/
+  gather_facts: yes
+  connection: local
+  tasks:
+
+  - name: set Timestamp for experiment
+    set_fact: timestamp="{{lookup('pipe','date +%Y-%m-%d_%H-%M-%S')}}" 
+
+  - name: Creating log folder
+    file: path={{ dest }}/{{ timestamp }}/logs state=directory group=masterthesis mode=0774
+
+  - name: Creating csv folder
+    file: path={{ dest }}/{{ timestamp }}/csv state=directory group=masterthesis mode=0774
+
+  - name: unzip hadoop logs
+    shell: unzip '*.zip' -d {{ dest }}/{{ timestamp }}/logs
+    args:
+      chdir: "{{ zip }}/logs"
+
+  - name: unzip hadoop csv
+    shell: unzip -o '*.zip' -d {{ dest }}/{{ timestamp }}/csv 
+    args:
+      chdir: "{{ zip }}/csv"

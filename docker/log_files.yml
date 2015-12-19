@@ -2,7 +2,7 @@
 - hosts: "{{ hosts }}"
   vars:
     hosts: nodes
-    logDest: /tmp/zips/docker_no_swarm/
+    logDest: /tmp/zips
     logSrc: /usr/local/hadoop/logs
   roles:
     - metrics
@@ -10,14 +10,6 @@
   gather_facts: yes
   remote_user: dbnet
   tasks:
-
-  - name: Check if logs folder exists
-    stat: path={{ logDest }}
-    register: logs
-
-  - name: Remove logs folder
-    when: logs.stat.exists
-    shell: rm -rf {{ logDest }}
 
   - name: Creating logs folder
     file: path={{ logDest }} state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
@@ -31,9 +23,9 @@
       chdir: "{{ logDest }}/logs"
 
   - name: zip log files
-    shell: zip log.zip *
+    shell: zip logs.zip *
     args:
       chdir: "{{ logDest }}/logs"
 
   - name: fetch log files
-    fetch: src={{ logDest }}/logs/log.zip dest=/tmp/zips/logs/{{ ansible_hostname }}.zip flat=yes
+    fetch: src={{ logDest }}/logs/logs.zip dest={{ logDest }}/logs/{{ ansible_hostname }}.zip flat=yes
