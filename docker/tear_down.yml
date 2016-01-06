@@ -9,5 +9,4 @@
   - name: Removing resources
     shell: rm -rf /home/dbnet/resources
 
-  - name: clear containers
-    shell: clearContainers
+- include: ../basics/clear_containers.yml
