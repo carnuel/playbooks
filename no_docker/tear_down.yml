@@ -1,0 +1,25 @@
+---
+- include: stop.yml hosts=nodes
+- include: uninstall_hadoop.yml hosts=nodes
+- include: unset_environment.yml hosts=nodes
+- include: reset_etc_hosts.yml hosts=nodes
+
+
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Remove start_hadoop.sh
+    shell: rm /home/dbnet/start_hadoop.sh
+
+  - name: Remove stop_hadoop.sh
+    shell: rm /home/dbnet/stop_hadoop.sh
+
+
+
+- include: ../hosts/reboot.yml
+

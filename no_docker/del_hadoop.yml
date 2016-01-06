@@ -1,5 +1,0 @@
----
-- include: stop.yml hosts=nodes
-- include: uninstall_hadoop.yml hosts=nodes
-- include: unset_environment.yml hosts=nodes
-- include: reset_etc_hosts.yml hosts=nodes

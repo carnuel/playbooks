@@ -1,0 +1,7 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Add dbnet to docker group
+    shell: usermod -aG docker dbnet 

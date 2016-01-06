@@ -1,0 +1,7 @@
+- hosts: cluster
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: install zip
+    shell: apt-get -y install zip
