@@ -3,3 +3,5 @@ metrics:
   - cadvisor.cpu.usage.total%25
   - cadvisor.memory.usage
   - cadvisor.diskio.ioserviced.write
+  - cadvisor.network.rxbytes
+  - cadvisor.network.txbytes

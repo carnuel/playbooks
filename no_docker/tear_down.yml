@@ -20,6 +20,7 @@
     shell: rm /home/dbnet/stop_hadoop.sh
 
 
-
+- include: ../basics/clear_containers.yml
+#- include: ../basics/clear_images.yml
+- include: ../basics/clear_volumes.yml
 - include: ../hosts/reboot.yml
-

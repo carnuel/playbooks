@@ -1,5 +1,5 @@
 ---
-- include: ../basics/clear_images.yml hosts=cluster
+- include: ../basics/clear_containers.yml hosts=cluster
 
 - include: reset_etc_hosts.yml hosts=nodes
 - include: edit_etc_hosts.yml hosts=nodes

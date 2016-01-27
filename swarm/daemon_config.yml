@@ -8,10 +8,12 @@
   - name: Check if drop in already exists
     stat: path=/etc/systemd/system/docker.service.d
     register: dropInFolder
+
   - name: Delete if folder exists
     when: dropInFolder.stat.exists == True
     register: folderDeleted
     shell: rm -rf /etc/systemd/system/docker.service.d
+
   - name: Create folder
     when: folderDeleted|success or folderDeleted|skipped
     register: folderCreated
@@ -21,6 +23,7 @@
     when: folderCreated|success
     register: dropInFileCopied
     copy: src=/media/usb1/masterthesis/config-files/daemon-config/daemon-drop-in.conf dest=/etc/systemd/system/docker.service.d/daemon-drop-in.conf
+
   - name: Copy daemon settings
     when: dropInFileCopied|success
     register: daemonSettingsCopied
@@ -35,6 +38,7 @@
     when: ipWritten|success
     register: systemctlDaemonReloaded
     shell: systemctl daemon-reload
+
   - name: systemctl restart docker
     when: systemctlDaemonReloaded|success
     shell: systemctl restart docker

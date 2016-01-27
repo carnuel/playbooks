@@ -7,11 +7,5 @@
   gather_facts: yes
   tasks:
 
-  - name: Pulling newest cadvisor image
-    register: imagepulled
-    shell: docker pull axibase/cadvisor:latest
-
   - name: Running cadvisor
-    when: imagepulled|success
-    register: running
-    shell: docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor axibase/cadvisor:latest --storage_driver=atsd --storage_driver_user=user --storage_driver_password=user --atsd_storage_url=http://{{ database }}:8088 --atsd_storage_write_host={{ database }}:8081 --atsd_storage_write_protocol=tcp --atsd_storage_docker_host={{ ansible_hostname }}
+    shell: docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true --name=cadvisor axibase/cadvisor --storage_driver=atsd --storage_driver_user=user --storage_driver_password=user --atsd_storage_url=http://{{ database }}:8088 --atsd_storage_write_host={{ database }}:8081 --atsd_storage_write_protocol=tcp --atsd_storage_docker_host={{ ansible_hostname }}

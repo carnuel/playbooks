@@ -1,0 +1,11 @@
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: cluster
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: clear volumes
+    shell: docker volume rm $(docker volume ls -qf dangling=true)
+    ignore_errors: yes

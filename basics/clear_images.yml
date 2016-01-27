@@ -5,11 +5,6 @@
   gather_facts: no
   remote_user: dbnet
   tasks:
-  - name: clear all containers
-    register: cleared
-    shell: clearContainers
 
   - name: delete all images
-    when: cleared|success
-    register: deleted
     shell: clearImages

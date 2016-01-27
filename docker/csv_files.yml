@@ -30,18 +30,23 @@
 
 - hosts: manager
   vars:
+    filler: '%2Fsystem.slice%2Fdocker-'
     namesFile: /tmp/container_names.txt
     namesSrc: /tmp/container_names/container_names.txt
     csvPath: /tmp/zips/csv
   roles:
+    - hostnames
     - metrics
   sudo: yes
-  gather_facts: no
+  gather_facts: yes
   remote_user: dbnet
   tasks:
 
   - name: Copy container names to manager
     copy: src={{ namesSrc }} dest={{ namesFile }} owner=dbnet group=dbnet mode=644
+
+#  - name: add axibase container to names file
+#    shell: echo {{ ansible_hostname }}{{ filler }}$(docker inspect -f {{'{{'}}.Id{{'}}'}} atsd) >> {{ namesFile }}
 
   - name: Get Hadoop-Container Docker-Id-Names
     shell: cat {{ namesFile }}
@@ -51,9 +56,15 @@
     file: path={{ csvPath }} state=directory owner=dbnet group=dbnet mode=0774 
 
   - name: Run curl command for Database for each Name and Metric
-    shell: curl -u user:user -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}.scope%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
+    shell: curl -u admin:CaKuMaLe15! -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}.scope%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
     with_nested:
       - conNames.stdout_lines
+      - metrics
+
+  - name: Run curl command for Database for each Name and Metric
+    shell: curl -u admin:CaKuMaLe15! -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}%2F%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
+    with_nested:
+      - hostnames
       - metrics
 
   - name: Zip csv folder
@@ -63,3 +74,4 @@
 
   - name: Fetch csv
     fetch: src={{ csvPath }}/csv.zip  dest={{ csvPath}}/csv.zip flat=yes
+
