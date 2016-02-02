@@ -14,4 +14,7 @@
 
 - include: ../basics/reset_daemons.yml
 #delete volume
+
+- include: ../basics/clear_volumes.yml
+
 - include: ../hosts/reboot.yml
