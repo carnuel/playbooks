@@ -1,6 +1,17 @@
 ---
-- include: ../basics/clear_containers.yml hosts=nodes:manager
-#- include: ../database/database.yml hosts=manager
-- include: ../database/cadvisor.yml hosts=manager:nodes
+#- include: ../basics/clear_containers.yml hosts=nodes:manager
+##- include: ../database/database.yml hosts=manager
+#- include: ../database/cadvisor.yml hosts=manager:nodes
 
-- include: configure.yml hosts=nodes
+#- include: configure.yml hosts=nodes
+
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Running hadoop
+    shell: docker run -itd -v /home/dbnet/resources:/mnt --net="host" --name="{{ ansible_hostname }}" carnuel/hadoop -d

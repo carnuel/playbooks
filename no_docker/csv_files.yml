@@ -2,7 +2,6 @@
   vars:
     hosts: manager
     csvPath: /tmp/zips/csv
-    namesFile: /tmp/container_names.txt
     filler: '%2Fsystem.slice%2Fdocker-'
   roles:
     - hostnames
@@ -13,29 +12,10 @@
   tasks:
 
   - name: Creating output folder 'csv'
-    register: folderCreated
-    file: path={{ csvPath }} state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
-
-  # Get metrics of axibase container
-  - name: add axibase container to names file
-    shell: echo {{ ansible_hostname }}{{ filler }}$(docker inspect -f {{'{{'}}.Id{{'}}'}} atsd) > {{ namesFile }}
-
-  - name: Get axibase container con name
-    shell: cat {{ namesFile }}
-    register: conNames
-
-  - name: Creating output folder 'csv'
     file: path={{ csvPath }} state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
 
   - name: Run curl command for Database for each Name and Metric
-    shell: curl -u user:user -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}.scope%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
-    with_nested:
-      - conNames.stdout_lines
-      - metrics
-
-  # Get metrics of host
-  - name: Run curl command for Database for each Name and Metric
-    shell: curl -u user:user -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}%2F%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
+    shell: curl -u admin:CaKuMaLe15! -o {{ csvPath }}/{{item[1]}}_{{item[0]}}.csv -v "http://localhost:8088/export?settings=%7B%22m%22%3A%22{{item[1]}}%22%2C%22e%22%3A%22{{item[0]}}%2F%22%2C%22si%22%3A%221-WEEK%22%2C%22st%22%3A%22previous_hour%22%2C%22et%22%3A%22now%22%2C%22t%22%3A%22HISTORY%22%2C%22f%22%3A%22CSV%22%2C%22np%22%3A-1%2C%22v%22%3Afalse%2C%22tf%22%3A%22ISO%22%2C%22ro%22%3Afalse%2C%22te%22%3A%5B%5D%7D"
     with_nested:
       - hostnames
       - metrics

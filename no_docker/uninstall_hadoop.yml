@@ -21,11 +21,3 @@
   - name: Del hadoop folder
     when: hadoop_unpacked.stat.exists == True
     shell: rm -rf /usr/local/hadoop*
-
-  - name: Check if log backup exists
-    stat: path=/home/dbnet/hadoop_logs
-    register: logs
-
-  - name: Del hadoop log backup
-    when: logs.stat.exists == True
-    shell: rm -rf /home/dbnet/hadoop_logs
