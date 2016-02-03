@@ -1,0 +1,17 @@
+- hosts: "{{ hosts }}"
+  vars: 
+    hosts: nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Creating resource folder
+    register: folderCreated
+    file: path=/home/dbnet/swarm_resources state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
+
+  - name: Copying the resources to all hosts
+    when: folderCreated|success
+    register: resourcesCopied
+    copy: src=/media/usb1/masterthesis/config-files/swarm_resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
+

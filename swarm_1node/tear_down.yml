@@ -1,0 +1,15 @@
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Removing resources
+    shell: rm -rf /home/dbnet/swarm_resources
+
+- include: ../basics/reset_daemons.yml
+- include: ../basics/clear_containers.yml
+- include: ../basics/clear_volumes.yml
+- include: ../hosts/reboot.yml

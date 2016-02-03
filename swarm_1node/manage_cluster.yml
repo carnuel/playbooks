@@ -8,11 +8,11 @@
   remote_user: dbnet
   tasks:
 
-  - name: Run manager
-    shell: docker run -d -p 2375:2375 swarm:latest manage consul://136.199.51.110:8500
+#  - name: Run manager
+#    shell: docker run -d -p 2375:2375 swarm:latest manage consul://136.199.51.110:8500
 
-  - name: Create overlay network
-    shell: docker -H 0.0.0.0:2375 network create --driver overlay hadoop-cluster
+#  - name: Create overlay network
+#    shell: docker -H 0.0.0.0:2375 network create --driver overlay hadoop-cluster
 
   - name: Run hadoop containers with specified names
     shell: docker -H 0.0.0.0:2375  run -itd -v /home/dbnet/swarm_resources:/mnt --net="hadoop-cluster" --hostname={{ item }}  --name={{ item }} carnuel/hadoop -d

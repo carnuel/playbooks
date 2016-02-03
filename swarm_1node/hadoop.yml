@@ -10,5 +10,5 @@
 
 - include: join_cluster.yml hosts=nodes
 #- include: pull_image.yml hosts=nodes
-- include: manage_cluster.yml hosts=manager
+#- include: manage_cluster.yml hosts=manager
 

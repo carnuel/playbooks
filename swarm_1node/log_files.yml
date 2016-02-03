@@ -1,0 +1,27 @@
+---
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: manager
+    logDest: /tmp/zips
+    logSrc: /usr/local/hadoop/logs
+  roles:
+    - names
+  sudo: yes
+  gather_facts: no
+  remote_user: dbnet
+  tasks:
+
+  - name: Create log folder
+    file: path={{ logDest }} state=directory owner=dbnet group=dbnet mode=0774
+
+  - name: Copy hadoop logs 
+    shell: docker -H 0.0.0.0:2375 cp $(docker -H 0.0.0.0:2375 ps -f "name={{ item }}" -q):{{ logSrc }} {{ logDest }}
+    with_items: names
+
+  - name: zip log folder
+    shell: zip logs.zip *
+    args:
+      chdir: "{{ logDest }}/logs"
+
+  - name: fetch log files
+    fetch: src={{ logDest }}/logs/logs.zip dest={{ logDest }}/logs/logs.zip flat=yes
