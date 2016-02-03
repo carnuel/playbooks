@@ -22,17 +22,11 @@
   - name: Copy drop-in file
     when: folderCreated|success
     register: dropInFileCopied
-    copy: src=/media/usb1/masterthesis/config-files/daemon-config/daemon-drop-in.conf dest=/etc/systemd/system/docker.service.d/daemon-drop-in.conf
-
-  - name: Copy daemon settings
-    when: dropInFileCopied|success
-    register: daemonSettingsCopied
-    copy: src=/media/usb1/masterthesis/config-files/daemon-config/swarm-daemon-settings.conf dest=/home/dbnet/daemon-settings.conf owner=dbnet group=dbnet mode=0644
+    shell: mv /home/dbnet/swarm_resources/daemon-drop-in.conf /etc/systemd/system/docker.service.d/daemon-drop-in.conf
 
   - name: Write IP in daemon settings
-    when:  daemonSettingsCopied|success
     register: ipWritten
-    shell: sed -i s/HOST_IP/{{ ansible_eth0.ipv4.address }}/ /home/dbnet/daemon-settings.conf
+    shell: sed -i s/HOST_IP/{{ ansible_eth0.ipv4.address }}/ /home/dbnet/swarm_resources/daemon-settings.conf
 
   - name: systemctl daemon-reload
     when: ipWritten|success

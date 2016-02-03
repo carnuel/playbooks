@@ -20,6 +20,3 @@
   - name: systemctl restart docker
     when: systemctlDaemonReloaded|success
     shell: systemctl restart docker
-
-  - name: Clear containers
-    shell: clearContainers

@@ -6,4 +6,4 @@
   tasks:
 
   - name: Join cluster
-    shell: docker run -d swarm join --addr={{ ansible_eth0.ipv4.address }}:2375 consul://136.199.51.110:8500
+    shell: docker run -d swarm:latest join --addr={{ ansible_eth0.ipv4.address }}:2375 consul://136.199.51.110:8500
