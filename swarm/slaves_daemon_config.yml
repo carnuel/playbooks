@@ -1,0 +1,41 @@
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
+  sudo: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Check if drop in already exists
+    stat: path=/etc/systemd/system/docker.service.d
+    register: dropInFolder
+
+  - name: Delete if folder exists
+    when: dropInFolder.stat.exists == True
+    register: folderDeleted
+    shell: rm -rf /etc/systemd/system/docker.service.d
+
+  - name: Create folder
+    when: folderDeleted|success or folderDeleted|skipped
+    register: folderCreated
+    file: path=/etc/systemd/system/docker.service.d state=directory owner=root group=root mode=0755
+
+  - name: Copy drop-in file
+    when: folderCreated|success
+    register: dropInFileCopied
+    shell: mv /home/dbnet/swarm_resources/daemon-drop-in.conf /etc/systemd/system/docker.service.d/daemon-drop-in.conf
+
+  - name: Copy drop-in file
+    shell: mv /home/dbnet/swarm_resources/slaves-daemon-settings.conf /home/dbnet/swarm_resources/daemon-settings.conf 
+
+  - name: Write IP in daemon settings
+    register: ipWritten
+    shell: sed -i s/HOST_IP/{{ ansible_eth0.ipv4.address }}/ /home/dbnet/swarm_resources/daemon-settings.conf
+
+  - name: systemctl daemon-reload
+    when: ipWritten|success
+    register: systemctlDaemonReloaded
+    shell: systemctl daemon-reload
+
+  - name: systemctl restart docker
+    when: systemctlDaemonReloaded|success
+    shell: systemctl restart docker

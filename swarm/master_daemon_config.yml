@@ -24,6 +24,9 @@
     register: dropInFileCopied
     shell: mv /home/dbnet/swarm_resources/daemon-drop-in.conf /etc/systemd/system/docker.service.d/daemon-drop-in.conf
 
+  - name: Copy drop-in file
+    shell: mv /home/dbnet/swarm_resources/master-daemon-settings.conf /home/dbnet/swarm_resources/daemon-settings.conf
+
   - name: Write IP in daemon settings
     register: ipWritten
     shell: sed -i s/HOST_IP/{{ ansible_eth0.ipv4.address }}/ /home/dbnet/swarm_resources/daemon-settings.conf
