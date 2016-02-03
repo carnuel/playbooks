@@ -8,10 +8,10 @@
 
   - name: Creating resource folder
     register: folderCreated
-    file: path=/home/dbnet/swarm_resources state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
+    file: path=/home/dbnet/swarm_resources_1node state=directory owner=dbnet group=dbnet mode=0774 recurse=yes
 
   - name: Copying the resources to all hosts
     when: folderCreated|success
     register: resourcesCopied
-    copy: src=/media/usb1/masterthesis/config-files/swarm_resources dest=/home/dbnet owner=dbnet group=dbnet mode=0664
+    copy: src=/media/usb1/masterthesis/config-files/swarm_resources_1node dest=/home/dbnet owner=dbnet group=dbnet mode=0664
 

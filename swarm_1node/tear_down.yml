@@ -7,7 +7,7 @@
   tasks:
 
   - name: Removing resources
-    shell: rm -rf /home/dbnet/swarm_resources
+    shell: rm -rf /home/dbnet/swarm_resources_1node
 
 - include: ../basics/reset_daemons.yml
 - include: ../basics/clear_containers.yml
