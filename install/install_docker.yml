@@ -7,7 +7,7 @@
   - name: Install docker
     register: installed
     shell: curl -sSL https://get.docker.com/ | sh
-
+ 
   - name: Add user to group docker
     when: installed|success
     shell: adduser dbnet docker

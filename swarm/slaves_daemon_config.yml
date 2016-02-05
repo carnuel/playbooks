@@ -25,7 +25,7 @@
     shell: mv /home/dbnet/swarm_resources/daemon-drop-in.conf /etc/systemd/system/docker.service.d/daemon-drop-in.conf
 
   - name: Copy drop-in file
-    shell: mv /home/dbnet/swarm_resources/slaves-daemon-settings.conf /home/dbnet/swarm_resources/daemon-settings.conf 
+    shell: mv /home/dbnet/swarm_resources/slave-daemon-settings.conf /home/dbnet/swarm_resources/daemon-settings.conf 
 
   - name: Write IP in daemon settings
     register: ipWritten

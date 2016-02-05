@@ -1,18 +1,18 @@
 ---
-- include: ../basics/clear_containers.yml hosts=cluster
+#- include: ../basics/clear_containers.yml hosts=cluster
 
 #- include: ../database/database.yml hosts=manager
-- include: start_consul.yml hosts=manager
+#- include: start_consul.yml hosts=manager
 
-- include: copy_resources.yml hosts=nodes
-- include: master_daemon_config.yml hosts=master
-- include: slaves_daemon_config.yml hosts=nodes2
+#- include: copy_resources.yml hosts=nodes
+#- include: master_daemon_config.yml hosts=master
+#- include: slaves_daemon_config.yml hosts=nodes2
 
-- include: ../database/cadvisor.yml hosts=nodes:manager
+#- include: ../database/cadvisor.yml hosts=nodes:manager
 
-- include: join_cluster.yml hosts=nodes
+#- include: join_cluster.yml hosts=nodes
 #- include: pull_image.yml hosts=nodes
 
-- include: manage_cluster.yml hosts=manager
+#- include: manage_cluster.yml hosts=manager
 - include: start_master.yml hosts=manager
 - include: start_slaves.yml hosts=manager
