@@ -1,13 +1,13 @@
 ---
-- include: ../basics/clear_containers.yml hosts=cluster
+#- include: ../basics/clear_containers.yml hosts=cluster
 
-- include: reset_etc_hosts.yml hosts=nodes
-- include: edit_etc_hosts.yml hosts=nodes
+#- include: reset_etc_hosts.yml hosts=nodes
+#- include: edit_etc_hosts.yml hosts=nodes
 
 #- include: ../database/database.yml hosts=manager
-- include: ../database/cadvisor.yml hosts=manager:nodes
+#- include: ../database/cadvisor.yml hosts=manager:nodes
 
-- include: set_environment.yml hosts=nodes
+#- include: set_environment.yml hosts=nodes
 - include: install_hadoop.yml hosts=nodes
 - include: copy_resources.yml hosts=nodes
 

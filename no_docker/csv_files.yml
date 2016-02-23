@@ -3,7 +3,7 @@
     hosts: manager
     csvPath: /tmp/zips/csv
     filler: '%2Fsystem.slice%2Fdocker-'
-    pass: lookup('env', 'ATSD_PWD')
+    pass: "{{ lookup('env', 'ATSD_PWD') }}"
   roles:
     - hostnames
     - metrics

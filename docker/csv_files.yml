@@ -35,7 +35,7 @@
     namesSrc: /tmp/container_names/container_names.txt
     csvPath: /tmp/zips/csv
     time: previous_hour
-    pass: lookup('env', 'ATSD_PWD')
+    pass: "lookup('env', 'ATSD_PWD')"
   roles:
     - hostnames
     - metrics
