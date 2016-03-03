@@ -1,0 +1,10 @@
+- hosts: "{{ hosts }}"
+  vars:
+    hosts: nodes
+  sudo: yes
+  gather_facts: yes
+  remote_user: dbnet
+  tasks:
+
+  - name: Running hadoop
+    shell: docker run -itd -v /home/dbnet/resources:/mnt --net="host" --name="{{ ansible_hostname }}" carnuel/hadoop -d
