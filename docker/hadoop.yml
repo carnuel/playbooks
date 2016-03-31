@@ -1,6 +1,6 @@
 ---
-- include: ../basics/clear_containers.yml hosts=nodes:manager
-- include: ../database/database.yml hosts=manager
+#- include: ../basics/clear_containers.yml hosts=nodes:manager
+#- include: ../database/database.yml hosts=manager
 - include: ../database/cadvisor.yml hosts=manager:nodes
 
 - include: copy_resources.yml hosts=nodes

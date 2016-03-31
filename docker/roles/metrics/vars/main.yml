@@ -1,7 +1,62 @@
 ---
 metrics:
+  - cadvisor.cpu.loadaverage
+  - cadvisor.cpu.loadaverage%25
+  - cadvisor.cpu.usage.percpu
+  - cadvisor.cpu.usage.percpu%25
+  - cadvisor.cpu.usage.system
+  - cadvisor.cpu.usage.system%25
+  - cadvisor.cpu.usage.total
   - cadvisor.cpu.usage.total%25
-  - cadvisor.memory.usage
+  - cadvisor.cpu.usage.user
+  - cadvisor.cpu.usage.user%25
+  - cadvisor.cpu.host.usage.system%25
+  - cadvisor.cpu.host.usage.total%25
+  - cadvisor.cpu.host.usage.user%25
+  - cadvisor.diskio.ioservicebytes.async
+  - cadvisor.diskio.ioservicebytes.read
+  - cadvisor.diskio.ioservicebytes.sync
+  - cadvisor.diskio.ioservicebytes.total
+  - cadvisor.diskio.ioservicebytes.write
+  - cadvisor.diskio.ioserviced.async
+  - cadvisor.diskio.ioserviced.read
+  - cadvisor.diskio.ioserviced.sync
+  - cadvisor.diskio.ioserviced.total
   - cadvisor.diskio.ioserviced.write
+  - cadvisor.memory.containerdata.pgfault
+  - cadvisor.memory.containerdata.pgmajfault
+  - cadvisor.memory.hierarchicaldata.pgfault
+  - cadvisor.memory.hierarchicaldata.pgmajfault
+  - cadvisor.memory.usage
+  - cadvisor.memory.workingset
+  - cadvisor.memory.cache
+  - cadvisor.memory.rss
+  - cadvisor.taskstats.nriowait
+  - cadvisor.taskstats.nrrunning
+  - cadvisor.taskstats.nrsleeping
+  - cadvisor.taskstats.nrstopped
+  - cadvisor.taskstats.nruninterruptible
+  - cadvisor.filesystem.available
+  - cadvisor.filesystem.ioinprogress
+  - cadvisor.filesystem.iotime
+  - cadvisor.filesystem.limit
+  - cadvisor.filesystem.readscompleted
+  - cadvisor.filesystem.readsmerged
+  - cadvisor.filesystem.readtime
+  - cadvisor.filesystem.sectorsread
+  - cadvisor.filesystem.sectorswritten
+  - cadvisor.filesystem.usage
+  - cadvisor.filesystem.weightediotime
+  - cadvisor.filesystem.writescompleted
+  - cadvisor.filesystem.writesmerged
+  - cadvisor.filesystem.writetime
+  - cadvisor.filesystem.baseusage
+  - cadvisor.filesystem.inodesfree
   - cadvisor.network.rxbytes
+  - cadvisor.network.rxdropped
+  - cadvisor.network.rxerrors
+  - cadvisor.network.rxpackets
   - cadvisor.network.txbytes
+  - cadvisor.network.txdropped
+  - cadvisor.network.txerrors
+  - cadvisor.network.txpackets

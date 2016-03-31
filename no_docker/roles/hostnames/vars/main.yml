@@ -3,7 +3,7 @@ hostnames:
   - "ssds111"
   - "ssds112"
   - "ssds113"
-  - "ssds114"
+#  - "ssds114"
   - "ssds115"
   - "ssds116"
   - "ssds117"

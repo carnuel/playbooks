@@ -11,12 +11,14 @@
 
   - name: Creating log folder
     file: path={{ dest }}/{{ timestamp }}/logs state=directory group=masterthesis mode=0774
+    ignore_errors: true
 
   - name: Creating csv folder
     file: path={{ dest }}/{{ timestamp }}/csv state=directory group=masterthesis mode=0774
 
   - name: unzip hadoop logs
     shell: unzip '*.zip' -d {{ dest }}/{{ timestamp }}/logs
+    ignore_errors: true
     args:
       chdir: "{{ zip }}/logs"
 

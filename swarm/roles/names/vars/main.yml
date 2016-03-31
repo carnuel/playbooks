@@ -1,8 +1,8 @@
 ---
 names:
-  - master
+#  - master
   - slave01
-  - slave02
+#  - slave02
   - slave03
   - slave04
   - slave05
@@ -16,13 +16,13 @@ names:
   - slave13
   - slave14
   - slave15
-  - slave16
-  - slave17
-  - slave18
-  - slave19
-  - slave20
-  - slave21
-  - slave22
-  - slave23
-  - slave24
+#  - slave16
+#  - slave17
+#  - slave18
+#  - slave19
+#  - slave20
+#  - slave21
+#  - slave22
+#  - slave23
+#  - slave24
 

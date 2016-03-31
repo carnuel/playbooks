@@ -1,5 +1,5 @@
 ---
-- include: ../basics/clear_containers.yml hosts=cluster
+#- include: ../basics/clear_containers.yml hosts=cluster
 
 #- include: ../database/database.yml hosts=manager
 - include: start_consul.yml hosts=manager
@@ -10,5 +10,5 @@
 
 - include: join_cluster.yml hosts=nodes
 #- include: pull_image.yml hosts=nodes
-- include: manage_cluster.yml hosts=manager
+#- include: manage_cluster.yml hosts=manager
 
